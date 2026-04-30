@@ -1,0 +1,726 @@
+@import "tailwindcss";
+
+/*
+  =====================================================================
+  Olive Linen — Design Tokens
+  ---------------------------------------------------------------------
+  These tokens are the source of truth for the brand. Tailwind v4 picks
+  them up via @theme so utilities like `bg-cream-50`, `text-olive-900`,
+  `font-display`, and `text-display-xl` work everywhere.
+
+  Brand direction: editorial, fashion-inspired, premium, soft, warm,
+  Queenstown-rooted. Avoid corporate / SaaS / Shopify-default feel.
+  =====================================================================
+*/
+
+@theme {
+  /* --- Colour: cream / oat backgrounds --- */
+  --color-cream-50: #fbf8f1;
+  --color-cream-100: #f6f1e6;
+  --color-cream-200: #efe8d6;
+  --color-cream-300: #e6dcc3;
+  --color-cream-400: #d8caa8;
+
+  /* --- Colour: deep olive (primary text + brand) --- */
+  --color-olive-50: #f3f5ee;
+  --color-olive-100: #e3e9d4;
+  --color-olive-200: #c7d2ae;
+  --color-olive-300: #a5b585;
+  --color-olive-400: #859966;
+  --color-olive-500: #677b4d;
+  --color-olive-600: #4f603a;
+  --color-olive-700: #3d4b2d;
+  --color-olive-800: #2a3520;
+  --color-olive-900: #1d2616;
+  --color-olive-950: #131a0e;
+
+  /* --- Colour: warm orange accent (use with restraint) --- */
+  --color-clay-50: #fdf3ec;
+  --color-clay-100: #fae0cd;
+  --color-clay-200: #f4c19e;
+  --color-clay-300: #ec9b6b;
+  --color-clay-400: #e07842;
+  --color-clay-500: #c8541c;
+  --color-clay-600: #a64315;
+  --color-clay-700: #823413;
+  --color-clay-800: #5e2510;
+
+  /* --- Colour: sage (secondary, dusty) --- */
+  --color-sage-50: #f3f5f0;
+  --color-sage-100: #e2e8d8;
+  --color-sage-200: #c8d3b6;
+  --color-sage-300: #a6b78d;
+  --color-sage-400: #879a6f;
+  --color-sage-500: #6b7d57;
+
+  /* --- Colour: stone (warm neutral) --- */
+  --color-stone-50: #f4f1ec;
+  --color-stone-100: #e6dfd2;
+  --color-stone-200: #cfc4b0;
+  --color-stone-300: #b3a48a;
+  --color-stone-400: #95846a;
+  --color-stone-500: #756752;
+  --color-stone-600: #574c3b;
+
+  /* --- Surface aliases --- */
+  --color-canvas: var(--color-cream-100);
+  --color-canvas-soft: var(--color-cream-50);
+  --color-canvas-warm: var(--color-cream-200);
+  --color-ink: var(--color-olive-900);
+  --color-ink-soft: var(--color-olive-700);
+  --color-ink-mute: var(--color-olive-500);
+  --color-rule: rgb(45 60 30 / 0.12);
+  --color-rule-soft: rgb(45 60 30 / 0.06);
+
+  /* --- Semantic --- */
+  --color-success: #4f7d3a;
+  --color-warning: #c98c1b;
+  --color-danger: #b03a2e;
+  --color-info: #4a6b80;
+
+  /* --- Typography --- */
+  --font-display: "Fraunces", "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Inter", "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Display scale — large editorial headlines */
+  --text-display-2xl: clamp(3.75rem, 8vw + 1rem, 8.5rem);
+  --text-display-2xl--line-height: 0.92;
+  --text-display-2xl--letter-spacing: -0.035em;
+
+  --text-display-xl: clamp(2.75rem, 5.5vw + 0.5rem, 6rem);
+  --text-display-xl--line-height: 0.96;
+  --text-display-xl--letter-spacing: -0.03em;
+
+  --text-display-lg: clamp(2.25rem, 4vw + 0.5rem, 4.25rem);
+  --text-display-lg--line-height: 1.02;
+  --text-display-lg--letter-spacing: -0.025em;
+
+  --text-display-md: clamp(1.75rem, 2.5vw + 0.5rem, 3rem);
+  --text-display-md--line-height: 1.08;
+  --text-display-md--letter-spacing: -0.02em;
+
+  --text-display-sm: clamp(1.5rem, 1.5vw + 0.5rem, 2rem);
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.015em;
+
+  /* UI scale */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.16em;
+
+  /* --- Radius — minimal, editorial --- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* --- Shadow — soft, never SaaS --- */
+  --shadow-soft: 0 1px 2px rgb(45 60 30 / 0.04), 0 8px 24px rgb(45 60 30 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(45 60 30 / 0.05), 0 18px 40px rgb(45 60 30 / 0.10);
+  --shadow-press: inset 0 1px 2px rgb(45 60 30 / 0.10);
+
+  /* --- Motion --- */
+  --ease-editorial: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --duration-fast: 150ms;
+  --duration-base: 280ms;
+  --duration-slow: 520ms;
+  --duration-reveal: 900ms;
+
+  /* --- Container --- */
+  --container-narrow: 64rem;   /* ~1024px */
+  --container-base: 80rem;     /* ~1280px */
+  --container-wide: 96rem;     /* ~1536px */
+}
+
+/*
+  =====================================================================
+  Base styles
+  =====================================================================
+*/
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt", "ss01";
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: var(--color-clay-300);
+    color: var(--color-olive-950);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    color: var(--color-olive-900);
+    font-weight: 400;
+  }
+
+  /* Numerals look more refined as old-style figures in body, but lining in tables */
+  body { font-variant-numeric: oldstyle-nums proportional-nums; }
+  table, .tabular { font-variant-numeric: lining-nums tabular-nums; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  /* Focus — editorial, on-brand */
+  :focus-visible {
+    outline: 2px solid var(--color-clay-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Ambient grain — subtle film texture across surfaces */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    background-image:
+      radial-gradient(rgba(45, 60, 30, 0.6) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+}
+
+/*
+  =====================================================================
+  Component primitives
+  =====================================================================
+*/
+
+@layer components {
+  /* Eyebrow — small all-caps label used above headlines */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-eyebrow);
+    line-height: 1.4;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-olive-600);
+  }
+
+  /* Editorial rule — hairline divider with optional tick */
+  .rule {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  /* Container shells — every variant centred + padded. Use one class. */
+  .shell {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+    max-width: var(--container-base);
+  }
+  .shell-narrow {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+    max-width: var(--container-narrow);
+  }
+  .shell-wide {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+    max-width: var(--container-wide);
+  }
+
+  @media (min-width: 768px) {
+    .shell        { padding-inline: 2.5rem; }
+    .shell-narrow { padding-inline: 2.5rem; }
+    .shell-wide   { padding-inline: 2.5rem; }
+  }
+  @media (min-width: 1280px) {
+    .shell        { padding-inline: 4rem; }
+    .shell-narrow { padding-inline: 4rem; }
+    .shell-wide   { padding-inline: 4rem; }
+  }
+
+  /* Buttons — editorial, no-default-feel */
+  .btn {
+    --btn-bg: var(--color-olive-900);
+    --btn-fg: var(--color-cream-50);
+    --btn-bd: var(--color-olive-900);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-bd);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform var(--duration-base) var(--ease-editorial),
+                background var(--duration-base) var(--ease-editorial),
+                color var(--duration-base) var(--ease-editorial),
+                border-color var(--duration-base) var(--ease-editorial);
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-secondary {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-olive-900);
+    --btn-bd: var(--color-olive-900);
+  }
+  .btn-secondary:hover {
+    --btn-bg: var(--color-olive-900);
+    --btn-fg: var(--color-cream-50);
+  }
+
+  .btn-clay {
+    --btn-bg: var(--color-clay-500);
+    --btn-fg: var(--color-cream-50);
+    --btn-bd: var(--color-clay-500);
+  }
+  .btn-clay:hover {
+    --btn-bg: var(--color-clay-600);
+    --btn-bd: var(--color-clay-600);
+  }
+
+  .btn-ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-olive-900);
+    --btn-bd: transparent;
+    padding-inline: 0.5rem;
+  }
+  .btn-ghost:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  /* Link — body inline link */
+  .lnk {
+    color: var(--color-olive-900);
+    border-bottom: 1px solid var(--color-rule);
+    transition: border-color var(--duration-fast) var(--ease-editorial);
+  }
+  .lnk:hover { border-color: var(--color-olive-900); }
+
+  /* Card — editorial, low-shadow */
+  .card {
+    background: var(--color-cream-50);
+    border: 1px solid var(--color-rule-soft);
+    border-radius: var(--radius-md);
+    transition: box-shadow var(--duration-base) var(--ease-editorial);
+  }
+  .card-elevated { box-shadow: var(--shadow-soft); }
+
+  /* Form controls — refined sans-serif inputs */
+  .field-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-olive-700);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .field-input,
+  .field-select,
+  .field-textarea {
+    width: 100%;
+    background: var(--color-cream-50);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--color-olive-900);
+    font-family: var(--font-sans);
+    transition: border-color var(--duration-fast) var(--ease-editorial),
+                background var(--duration-fast) var(--ease-editorial);
+  }
+  .field-input::placeholder { color: var(--color-olive-400); }
+  .field-input[type="date"] {
+    min-height: 3.625rem;
+    padding-right: 3.25rem;
+    color-scheme: light;
+    font-variant-numeric: lining-nums tabular-nums;
+    accent-color: var(--color-clay-500);
+  }
+  .field-input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+  .field-input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 0.375rem;
+    opacity: 0.8;
+    transition: opacity var(--duration-fast) var(--ease-editorial),
+                transform var(--duration-fast) var(--ease-editorial),
+                background var(--duration-fast) var(--ease-editorial);
+    filter: sepia(20%) saturate(1200%) hue-rotate(338deg) brightness(0.82);
+  }
+  .field-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    transform: scale(1.04);
+    background: rgb(200 84 28 / 0.08);
+  }
+  .field-input:focus,
+  .field-select:focus,
+  .field-textarea:focus {
+    outline: none;
+    border-color: var(--color-olive-700);
+    background: white;
+  }
+  .date-card {
+    position: relative;
+    z-index: 0;
+    overflow: visible;
+    background:
+      radial-gradient(circle at top right, rgb(236 155 107 / 0.10), transparent 38%),
+      linear-gradient(180deg, rgb(251 248 241 / 0.96), rgb(246 241 230 / 0.98));
+    border: 1px solid rgb(45 60 30 / 0.10);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    box-shadow: 0 10px 30px rgb(45 60 30 / 0.04);
+    transition: transform var(--duration-base) var(--ease-editorial),
+                border-color var(--duration-base) var(--ease-editorial),
+                box-shadow var(--duration-base) var(--ease-editorial);
+  }
+  .date-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, rgb(200 84 28 / 0.34), transparent 55%);
+  }
+  .date-card:hover {
+    transform: translateY(-1px);
+    border-color: rgb(45 60 30 / 0.16);
+    box-shadow: 0 18px 38px rgb(45 60 30 / 0.08);
+  }
+  .date-card-open {
+    z-index: 20;
+    margin-bottom: clamp(12rem, 26vw, 17rem);
+  }
+  .date-card-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.45rem;
+  }
+  .date-card-copy {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .date-card-hint {
+    font-size: 0.83rem;
+    line-height: 1.45;
+    color: rgb(61 75 45 / 0.78);
+    text-wrap: pretty;
+  }
+  .date-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 999px;
+    background: rgb(200 84 28 / 0.10);
+    color: var(--color-clay-600);
+    flex-shrink: 0;
+  }
+  .date-card .field-label {
+    margin-bottom: 0;
+  }
+  .date-card .field-input[type="date"] {
+    background: rgb(255 255 255 / 0.74);
+    border-color: rgb(45 60 30 / 0.10);
+  }
+  .date-card .field-input[type="date"]:focus {
+    background: white;
+    border-color: var(--color-clay-400);
+    box-shadow: 0 0 0 4px rgb(200 84 28 / 0.08);
+  }
+  .date-trigger {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 3.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1rem 0.95rem 1.05rem;
+    border: 1px solid rgb(45 60 30 / 0.10);
+    border-radius: var(--radius-sm);
+    background: rgb(255 255 255 / 0.74);
+    color: var(--color-olive-900);
+    font-size: 0.9375rem;
+    text-align: left;
+    transition: border-color var(--duration-fast) var(--ease-editorial),
+                background var(--duration-fast) var(--ease-editorial),
+                transform var(--duration-fast) var(--ease-editorial),
+                box-shadow var(--duration-fast) var(--ease-editorial);
+  }
+  .date-trigger:hover {
+    transform: translateY(-1px);
+    border-color: rgb(45 60 30 / 0.18);
+    background: white;
+  }
+  .date-trigger:focus-visible {
+    outline: none;
+    border-color: var(--color-clay-400);
+    box-shadow: 0 0 0 4px rgb(200 84 28 / 0.08);
+  }
+  .date-trigger-placeholder {
+    color: rgb(61 75 45 / 0.76);
+  }
+  .date-trigger-value {
+    text-wrap: pretty;
+    line-height: 1.35;
+  }
+  .date-popover {
+    position: relative;
+    z-index: 30;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 1rem;
+    border: 1px solid rgb(45 60 30 / 0.10);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at top right, rgb(236 155 107 / 0.12), transparent 30%),
+      linear-gradient(180deg, rgb(255 252 247 / 0.98), rgb(248 243 234 / 0.99));
+    box-shadow:
+      0 18px 50px rgb(45 60 30 / 0.12),
+      inset 0 1px 0 rgb(255 255 255 / 0.75);
+    backdrop-filter: blur(14px);
+  }
+  .date-popover-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .date-popover-title {
+    display: grid;
+    justify-items: center;
+    gap: 0.15rem;
+    text-align: center;
+    color: var(--color-olive-900);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+  .date-popover-title .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    line-height: 1;
+  }
+  .date-popover-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border: 1px solid rgb(45 60 30 / 0.08);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.7);
+    color: var(--color-olive-700);
+    transition: transform var(--duration-fast) var(--ease-editorial),
+                border-color var(--duration-fast) var(--ease-editorial),
+                color var(--duration-fast) var(--ease-editorial),
+                background var(--duration-fast) var(--ease-editorial);
+  }
+  .date-popover-nav:hover {
+    transform: translateY(-1px);
+    border-color: rgb(200 84 28 / 0.22);
+    color: var(--color-clay-600);
+    background: white;
+  }
+  .date-popover-weekdays,
+  .date-popover-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .date-popover-weekdays {
+    margin-bottom: 0.45rem;
+    color: rgb(61 75 45 / 0.72);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .date-popover-weekdays span {
+    padding-block: 0.35rem;
+  }
+  .date-popover-grid {
+    gap: 0.2rem;
+  }
+  .date-popover-day {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    color: var(--color-olive-900);
+    font-size: 0.92rem;
+    font-variant-numeric: lining-nums tabular-nums;
+    transition: transform var(--duration-fast) var(--ease-editorial),
+                background var(--duration-fast) var(--ease-editorial),
+                color var(--duration-fast) var(--ease-editorial),
+                box-shadow var(--duration-fast) var(--ease-editorial);
+  }
+  .date-popover-day:hover {
+    transform: translateY(-1px);
+    background: rgb(200 84 28 / 0.10);
+    color: var(--color-clay-700);
+  }
+  .date-popover-day-outside {
+    color: rgb(103 123 77 / 0.42);
+  }
+  .date-popover-day-selected {
+    background: var(--color-clay-500);
+    color: var(--color-cream-50);
+    box-shadow: 0 10px 22px rgb(200 84 28 / 0.22);
+  }
+  .date-popover-day-selected:hover {
+    background: var(--color-clay-600);
+    color: var(--color-cream-50);
+  }
+  .date-popover-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.9rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgb(45 60 30 / 0.08);
+  }
+  .date-popover-link {
+    color: var(--color-olive-700);
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color var(--duration-fast) var(--ease-editorial);
+  }
+  .date-popover-link:hover {
+    color: var(--color-clay-600);
+  }
+  .field-error {
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    margin-top: 0.375rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Pill — small tag/badge */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-olive-700);
+    font-weight: 500;
+  }
+
+  /* Marquee tagline — for "like the olive to your martini" treatments */
+  .tagline-script {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    color: var(--color-clay-500);
+  }
+
+  /* Editorial image frame — positioned so next/image `fill` works without an extra `relative` */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-cream-200);
+  }
+  .frame > * {
+    transition: transform var(--duration-slow) var(--ease-editorial);
+  }
+  .frame:hover > * { transform: scale(1.03); }
+}
+
+/*
+  =====================================================================
+  Motion — subtle reveals on scroll
+  =====================================================================
+*/
+
+@layer utilities {
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .animate-fade-up { animation: fade-up var(--duration-reveal) var(--ease-editorial) both; }
+  .animate-fade-in { animation: fade-in var(--duration-slow) var(--ease-editorial) both; }
+  .animate-ticker  { animation: ticker 38s linear infinite; }
+
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* Respect users' motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
