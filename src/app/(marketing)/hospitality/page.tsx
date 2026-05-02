@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Hospitality & Custom",
@@ -9,76 +8,138 @@ export const metadata: Metadata = {
     "Custom branded napkins for restaurants, bars, venues and brands. Logo, fabric, edge and colour — all yours.",
 };
 
+const steps = [
+  {
+    step: "01",
+    title: "Fabric & edge",
+    body: "Linen, cotton, cotton-rayon or polyester. Plain, trimmed, scallop or specialty edge — chosen with your brand and service in mind.",
+  },
+  {
+    step: "02",
+    title: "Your mark",
+    body: "Upload logos, brand colours, inspiration. Pantone-matched embroidery thread or printed treatments. Hand-finished by us.",
+  },
+  {
+    step: "03",
+    title: "Quote or pay",
+    body: "Tier pricing from gift sets to 5,000+. Pay a deposit, pay in full, or get a written quote — whichever fits your timeline.",
+  },
+];
+
 export default function HospitalityPage() {
   return (
     <>
-      <section className="bg-canvas pt-20 lg:pt-28 pb-20">
-        <div className="shell-wide grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-7">
-            <p className="eyebrow flex items-center gap-3">
-              <span className="inline-block h-px w-8 bg-olive-700/40" />
-              Hospitality · Custom napkins
-            </p>
-            <h1 className="mt-6 font-display text-display-xl text-olive-900 leading-[0.96]">
-              Make your brand feel{" "}
-              <span className="italic font-light">like itself</span> on the table.
-            </h1>
-            <p className="mt-8 text-lg text-olive-800/80 max-w-xl leading-relaxed">
-              Branded linen for restaurants, bars, hotels and wedding clients.
-              Choose your fabric, edge, colour and logo — we produce in tiers from
-              40 to 5,000 pieces, with deposit, full payment, or quote-only options.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link href="/hospitality/builder" className="btn btn-clay">
-                Start the builder
-                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
-              </Link>
-              <Link href="/hospitality/quote" className="btn btn-secondary">
-                Request a quote
-              </Link>
+      {/* Hero — editorial split */}
+      <section className="bg-canvas pt-12 lg:pt-20 pb-20 lg:pb-28">
+        <div className="shell-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end">
+            <div className="lg:col-span-7" data-reveal>
+              <p className="eyebrow flex items-center gap-3 mb-5">
+                <span className="inline-block h-px w-10 bg-olive-700/40" />
+                Hospitality · Custom napkins
+              </p>
+              <h1 className="font-display text-display-2xl text-olive-900 leading-[0.96]">
+                Make your brand feel{" "}
+                <span className="italic font-light">like itself</span>{" "}
+                on the table.
+              </h1>
+              <p className="mt-8 text-lg text-olive-800/80 max-w-xl leading-[1.55]">
+                Branded linen for restaurants, bars, hotels and venues. Choose
+                your fabric, edge, colour and logo — we produce in tiers from
+                forty to five thousand pieces, with deposit, full payment, or
+                quote-only options.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <Link href="/hospitality/builder" className="btn btn-lg">
+                  Start the builder
+                </Link>
+                <Link
+                  href="/about/contact"
+                  className="btn btn-secondary btn-lg"
+                >
+                  Talk to the studio
+                </Link>
+              </div>
+              <p className="mt-12 text-sm italic font-display text-olive-700/70">
+                Hand-finished in Queenstown, three weeks from approval to ship.
+              </p>
             </div>
-          </div>
-          <div className="lg:col-span-5">
-            <div className="frame aspect-[4/5]">
-              <Image
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=80"
-                alt="Custom branded napkins for hospitality clients"
-                fill
-                priority
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                className="object-cover"
-              />
+
+            <div className="lg:col-span-5" data-reveal data-reveal-delay="2">
+              <figure className="relative">
+                <div className="frame relative aspect-[4/5]">
+                  <Image
+                    src="https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1400&q=85"
+                    alt="Custom-edge napkin folded for service"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 40vw, 92vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="mt-3 flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-olive-700/70">
+                  <span className="inline-block h-px w-6 bg-olive-700/30" />
+                  Margot Group · Custom scallop, 240 pieces
+                </figcaption>
+              </figure>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-cream-50 py-20 border-t border-[color:var(--color-rule-soft)]">
+      {/* How it works */}
+      <section className="bg-[color:var(--color-paper)] py-24 lg:py-32 border-y border-[color:var(--border-hairline)]">
         <div className="shell-wide">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              {
-                step: "01",
-                title: "Pick fabric & edge",
-                body: "Linen, cotton, cotton-rayon or polyester. Plain, trimmed, scallop or specialty edge — admin-defined options to match your brand.",
-              },
-              {
-                step: "02",
-                title: "Add your mark",
-                body: "Upload logos, brand colours, inspiration boards. Choose Pantone-matched thread or printed treatments.",
-              },
-              {
-                step: "03",
-                title: "Quote or pay",
-                body: "Tier pricing from gift sets to 5,000+. Pay a deposit, pay in full, or get a quote — whichever the studio configures for your tier.",
-              },
-            ].map((s) => (
-              <div key={s.step} className="border-t border-[color:var(--color-rule)] pt-6">
-                <p className="eyebrow text-clay-500">Step {s.step}</p>
-                <h3 className="mt-3 font-display text-2xl text-olive-900">{s.title}</h3>
-                <p className="mt-3 text-olive-700/80 leading-relaxed">{s.body}</p>
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 mb-14 items-end">
+            <div className="lg:col-span-7" data-reveal>
+              <p className="eyebrow flex items-center gap-3 mb-5">
+                <span className="inline-block h-px w-10 bg-olive-700/40" />
+                How it goes
+              </p>
+              <h2 className="font-display text-display-lg text-olive-900 leading-[1.02]">
+                Three small decisions,{" "}
+                <span className="italic font-light text-olive-700/85">
+                  a quietly serious result.
+                </span>
+              </h2>
+            </div>
+            <div className="lg:col-span-5" data-reveal data-reveal-delay="1">
+              <p className="text-olive-800/80 leading-relaxed max-w-md">
+                Most hospitality clients run the builder once, then we
+                correspond about the small things — thread tone, pantone match,
+                fold preferences — over a few emails.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+            {steps.map((s, i) => (
+              <article
+                key={s.step}
+                className="border-t border-[color:var(--border-base)] pt-6"
+                data-reveal
+                data-reveal-delay={String(Math.min(i + 1, 4))}
+              >
+                <p className="font-display italic tabular text-clay-500 text-lg leading-none">
+                  {s.step}
+                </p>
+                <h3 className="mt-4 font-display text-[clamp(1.5rem,1.8vw,1.875rem)] text-olive-900 leading-[1.05]">
+                  {s.title}
+                </h3>
+                <p className="mt-4 text-olive-700/85 leading-relaxed text-[15px]">
+                  {s.body}
+                </p>
+              </article>
             ))}
+          </div>
+
+          <div className="mt-16 flex flex-wrap items-center gap-3">
+            <Link href="/hospitality/builder" className="btn btn-lg">
+              Start the builder
+            </Link>
+            <Link href="/about/contact" className="btn btn-secondary btn-lg">
+              Talk first
+            </Link>
           </div>
         </div>
       </section>

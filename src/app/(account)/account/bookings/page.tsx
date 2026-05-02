@@ -17,7 +17,7 @@ export default async function AccountBookings() {
       {bookings.length === 0 ? (
         <div className="rounded-md border border-dashed border-olive-300 bg-cream-50 p-10 text-center">
           <p className="font-display italic text-olive-700 text-2xl">No bookings yet.</p>
-          <Link href="/hire" className="btn btn-clay mt-6">Start a new hire</Link>
+          <Link href="/hire" className="btn mt-6">Start a new hire</Link>
         </div>
       ) : (
         <ul className="divide-y divide-[color:var(--color-rule-soft)]">
@@ -50,7 +50,7 @@ export default async function AccountBookings() {
 
       <div className="rounded-md border border-dashed border-olive-300 bg-cream-50 p-10 text-center">
         <p className="font-display italic text-olive-700 text-2xl">Past bookings appear here for re-orders.</p>
-        <Link href="/hire" className="btn btn-clay mt-6">Start a new hire</Link>
+        <Link href="/hire" className="btn mt-6">Start a new hire</Link>
       </div>
     </div>
   );

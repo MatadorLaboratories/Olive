@@ -2,10 +2,13 @@ import { headers } from "next/headers";
 import { PortalShell, type PortalNavItem } from "@/components/portal/PortalShell";
 import { getCurrentProfile } from "@/services/auth";
 import { getBookingsForCurrentUser } from "@/services/bookings-read";
+import { getCustomOrdersForCurrentUser } from "@/services/custom-orders-read";
+import { claimCustomOrdersForCurrentUser } from "@/services/custom-orders-claim";
 
 const navBase: PortalNavItem[] = [
   { label: "Dashboard",     href: "/account" },
   { label: "Bookings",      href: "/account/bookings" },
+  { label: "Custom orders", href: "/account/custom-orders" },
   { label: "Messages",      href: "/account/messages" },
   { label: "Documents",     href: "/account/documents" },
   { label: "Order history", href: "/account/history" },
@@ -15,9 +18,15 @@ const navBase: PortalNavItem[] = [
 export default async function AccountLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [profile, bookings, headerStore] = await Promise.all([
+  // Anonymous-submission handoff: any custom orders submitted before the
+  // user had an account are linked here on first authenticated visit. Idem-
+  // potent on subsequent renders — cheap once everything is claimed.
+  await claimCustomOrdersForCurrentUser();
+
+  const [profile, bookings, customOrders, headerStore] = await Promise.all([
     getCurrentProfile(),
     getBookingsForCurrentUser(),
+    getCustomOrdersForCurrentUser(),
     headers(),
   ]);
 
@@ -34,9 +43,17 @@ export default async function AccountLayout({
     (b) => !["completed", "cancelled", "archived"].includes(b.status),
   ).length;
 
-  const nav = navBase.map((n) =>
-    n.href === "/account/bookings" ? { ...n, count: activeCount } : n,
-  );
+  // Active custom orders (anything not completed/cancelled).
+  const activeCustomCount = customOrders.filter(
+    (o) => !["completed", "cancelled"].includes(o.status),
+  ).length;
+
+  const nav = navBase.map((n) => {
+    if (n.href === "/account/bookings") return { ...n, count: activeCount };
+    if (n.href === "/account/custom-orders")
+      return { ...n, count: activeCustomCount };
+    return n;
+  });
 
   return (
     <PortalShell

@@ -111,4 +111,32 @@ Reply to this email to accept or ask any questions. Once we have the green light
 
 — Olive Linen`,
   },
+
+  "custom_order.deposit_received": {
+    key: "custom_order.deposit_received",
+    subject: "Deposit received — {{reference}}",
+    bodyMd: `Hi {{firstName}},
+
+We've received your deposit of **{{amount}}** for custom order **{{reference}}** — production is locked in.
+
+Quote total **{{quoteTotal}}**, balance outstanding **{{outstandingAmount}}**. We'll invoice the balance once your order is ready to despatch.
+
+You can view the order, message the studio, and pay the balance anytime from your portal:
+{{portalUrl}}
+
+— Olive Linen`,
+  },
+
+  "custom_order.fully_paid": {
+    key: "custom_order.fully_paid",
+    subject: "Custom order paid — {{reference}}",
+    bodyMd: `Hi {{firstName}},
+
+We've received **{{amount}}** for custom order **{{reference}}** — fully paid up. Thank you.
+
+We'll be in touch the week before despatch with timings. You can track production from the portal anytime:
+{{portalUrl}}
+
+— Olive Linen`,
+  },
 };

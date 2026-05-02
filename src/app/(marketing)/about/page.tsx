@@ -94,7 +94,7 @@ export default async function AboutPage() {
 
       <section className="bg-canvas py-20">
         <div className="shell-narrow text-center">
-          <Link href="/about/contact" className="btn btn-clay">Get in touch</Link>
+          <Link href="/about/contact" className="btn">Get in touch</Link>
         </div>
       </section>
     </>

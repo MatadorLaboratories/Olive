@@ -41,7 +41,7 @@ export default async function AdminBookings({
         title={<>All <span className="italic font-light">bookings.</span></>}
         description={`${bookings.length} ${bookings.length === 1 ? "booking" : "bookings"} matching your filters.`}
         actions={
-          <Link href="/admin/bookings/new" className="btn btn-clay !py-3">
+          <Link href="/admin/bookings/new" className="btn !py-3">
             New booking
           </Link>
         }

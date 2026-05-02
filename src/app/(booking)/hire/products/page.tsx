@@ -105,7 +105,7 @@ export default async function BookingProductsPage() {
           <div className="mt-14 flex items-center gap-3">
             <Link
               href="/hire/quantities"
-              className={`btn btn-clay ${draft.items.length === 0 ? "opacity-40 pointer-events-none" : ""}`}
+              className={`btn ${draft.items.length === 0 ? "opacity-40 pointer-events-none" : ""}`}
               aria-disabled={draft.items.length === 0}
             >
               Continue to review

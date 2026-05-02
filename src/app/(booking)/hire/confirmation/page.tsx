@@ -43,7 +43,7 @@ export default async function BookingConfirmationPage({
       </div>
 
       <div className="mt-14 text-center flex flex-wrap items-center justify-center gap-3">
-        <Link href="/account" className="btn btn-clay">Open my portal</Link>
+        <Link href="/account" className="btn">Open my portal</Link>
         <Link href="/" className="btn btn-secondary">Back to home</Link>
       </div>
     </BookingShell>

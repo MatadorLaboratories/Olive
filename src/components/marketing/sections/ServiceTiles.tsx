@@ -1,32 +1,35 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
 
+/**
+ * Three pathways — events / retail / hospitality. Type-led tiles with
+ * one strong image each. Lighter on garnish than the previous version.
+ */
 const services = [
   {
+    label: "Events",
     title: "Hire linen",
-    eyebrow: "01 / Events",
-    subtitle: "For weddings, private events and the dinners that go on too long.",
+    body: "For weddings, private events and the dinners that go on too long. Pick dates first, then we'll show you what's available.",
     image:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=1100&q=85",
     href: "/hire" as const,
     cta: "Start a hire",
   },
   {
+    label: "Retail",
     title: "Shop linen",
-    eyebrow: "02 / Retail",
-    subtitle: "Take a piece of the studio home — sets of napkins, runners and post-wedding gifts.",
+    body: "Take a piece of the studio home. Sets of scallop napkins, runners, candles and post-wedding gifts.",
     image:
-      "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1100&q=85",
     href: "/shop" as const,
     cta: "Browse the shop",
   },
   {
+    label: "Hospitality",
     title: "Custom napkins",
-    eyebrow: "03 / Hospitality",
-    subtitle: "Branded linen for restaurants, bars and venues. Logo, edge, fabric, colour — all yours.",
+    body: "Branded linen for restaurants, bars, venues and brands. Logo, edge, fabric, colour — tiers from forty to five thousand.",
     image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1100&q=85",
     href: "/hospitality" as const,
     cta: "Build a quote",
   },
@@ -34,58 +37,71 @@ const services = [
 
 export function ServiceTiles() {
   return (
-    <section className="bg-canvas py-24 lg:py-36">
+    <section className="bg-canvas py-24 lg:py-36 border-t border-[color:var(--border-hairline)]">
       <div className="shell-wide">
-        <div className="max-w-3xl mb-16">
-          <p className="eyebrow mb-4">Three ways in</p>
-          <h2 className="font-display text-display-lg text-olive-900 leading-[1]">
-            Pick a path.{" "}
-            <span className="italic font-light text-olive-700/85">
-              We'll meet you there.
-            </span>
-          </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 items-end">
+          <div className="lg:col-span-7" data-reveal>
+            <p className="eyebrow flex items-center gap-3 mb-5">
+              <span className="inline-block h-px w-10 bg-olive-700/40" />
+              Three ways in
+            </p>
+            <h2 className="font-display text-display-lg text-olive-900 leading-[1.02]">
+              Pick a path.{" "}
+              <span className="italic font-light text-olive-700/85">
+                We'll meet you there.
+              </span>
+            </h2>
+          </div>
+          <div className="lg:col-span-5" data-reveal data-reveal-delay="1">
+            <p className="text-olive-800/80 leading-relaxed max-w-md">
+              Three pathways into the studio — pick one, or use the front door.
+              Either way, you'll be talking to a person within a day.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {services.map((s, i) => (
-            <Link
+            <article
               key={s.href}
-              href={s.href}
-              className="group relative block animate-fade-up"
-              style={{ animationDelay: `${i * 120}ms` }}
+              className="group flex flex-col"
+              data-reveal
+              data-reveal-delay={String(Math.min(i + 1, 4))}
             >
-              <div className="frame aspect-[4/5]">
-                <Image
-                  src={s.image}
-                  alt={s.title}
-                  fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-cover"
-                />
-                {/* Soft corner overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-olive-950/40 via-transparent to-transparent" />
-                <div className="absolute top-5 left-5 right-5 flex items-center justify-between text-cream-50">
-                  <p className="text-[11px] uppercase tracking-[0.18em] font-medium">
-                    {s.eyebrow}
-                  </p>
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" strokeWidth={1.5} />
+              <Link href={s.href} className="block">
+                <div className="frame aspect-[4/5] relative">
+                  <Image
+                    src={s.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                  {/* Quiet label, top-left, on a hairline panel */}
+                  <span className="absolute top-4 left-4 inline-flex items-center px-2.5 py-1 rounded-full bg-cream-50/85 backdrop-blur-sm border border-[color:var(--border-soft)] text-[10px] uppercase tracking-[0.16em] text-olive-700">
+                    {s.label}
+                  </span>
                 </div>
-                <div className="absolute bottom-6 left-6 right-6 text-cream-50">
-                  <h3 className="font-display text-3xl leading-tight">{s.title}</h3>
-                  <p className="mt-2 text-cream-50/85 text-sm leading-snug max-w-[28ch]">
-                    {s.subtitle}
-                  </p>
+              </Link>
+
+              <div className="mt-6 flex flex-col flex-1">
+                <h3 className="font-display text-[clamp(1.75rem,2.4vw,2.25rem)] text-olive-900 leading-[1.05]">
+                  {s.title}
+                </h3>
+                <p className="mt-3 text-olive-700/85 leading-relaxed text-[15px] max-w-sm">
+                  {s.body}
+                </p>
+                <div className="mt-6 pt-5 border-t border-[color:var(--border-hairline)]">
+                  <Link
+                    href={s.href}
+                    className="inline-flex items-baseline gap-3 text-[12px] uppercase tracking-[0.16em] text-olive-800 hover:text-clay-600 transition-colors"
+                  >
+                    <span className="inline-block w-6 h-px bg-current" />
+                    {s.cta}
+                  </Link>
                 </div>
               </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <span className="text-[12px] uppercase tracking-[0.14em] text-olive-700">
-                  {s.cta}
-                </span>
-                <span className="text-[12px] tabular text-olive-500">
-                  0{i + 1} / 03
-                </span>
-              </div>
-            </Link>
+            </article>
           ))}
         </div>
       </div>

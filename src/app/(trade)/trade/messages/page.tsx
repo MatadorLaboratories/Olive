@@ -25,7 +25,7 @@ export default async function TradeMessages() {
       {live.length === 0 ? (
         <div className="card p-10 text-center">
           <p className="font-display italic text-olive-700 text-2xl">No open conversations.</p>
-          <Link href="/hire" className="btn btn-clay mt-6">Start a hire</Link>
+          <Link href="/hire" className="btn mt-6">Start a hire</Link>
         </div>
       ) : (
         <ul className="divide-y divide-[color:var(--color-rule-soft)] border-y border-[color:var(--color-rule-soft)]">

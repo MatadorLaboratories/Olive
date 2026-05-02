@@ -35,7 +35,7 @@ export function PlaceholderPage({
         </div>
 
         <div className="mt-12 flex flex-wrap items-center gap-3">
-          <Link href={primaryCta.href} className="btn btn-clay">
+          <Link href={primaryCta.href} className="btn">
             {primaryCta.label}
             <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
           </Link>

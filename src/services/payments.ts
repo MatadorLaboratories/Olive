@@ -53,3 +53,30 @@ export async function createFinalBalanceIntent(args: {
     description: `Olive Linen — final balance ${args.bookingReference}`,
   });
 }
+
+/**
+ * Custom-order PaymentIntent helper.
+ *
+ * Mirrors the booking variant but writes a different `kind` so the webhook
+ * can branch onto the custom-order code path. `mode` distinguishes a 50%
+ * deposit vs. paying the full quote; both use the `custom_order_*` reserved
+ * `kind` values to keep the webhook switch tight.
+ */
+export async function createCustomOrderIntent(args: {
+  amountCents: number;
+  customOrderReference: string;
+  customerEmail: string;
+  mode: "deposit" | "full";
+}) {
+  const stripe = getStripe();
+  return stripe.paymentIntents.create({
+    amount: args.amountCents,
+    currency: "nzd",
+    receipt_email: args.customerEmail,
+    metadata: {
+      custom_order_reference: args.customOrderReference,
+      kind: args.mode === "deposit" ? "custom_order_deposit" : "custom_order_full",
+    },
+    description: `Olive Linen — custom order ${args.customOrderReference} (${args.mode})`,
+  });
+}

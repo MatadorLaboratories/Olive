@@ -17,7 +17,7 @@ export default function NotFound() {
           we'll show you back to the table.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/" className="btn btn-clay">Back to home</Link>
+          <Link href="/" className="btn">Back to home</Link>
           <Link href="/hire" className="btn btn-secondary">Start a hire</Link>
         </div>
       </div>

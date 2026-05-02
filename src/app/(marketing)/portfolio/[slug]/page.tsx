@@ -103,7 +103,7 @@ export default async function PortfolioItemPage({
                 We can recreate the linen palette of any event in our portfolio.
                 Start a hire and tell us which case study inspired you.
               </p>
-              <Link href="/hire" className="btn btn-clay !py-3">
+              <Link href="/hire" className="btn !py-3">
                 Start a hire
                 <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
               </Link>

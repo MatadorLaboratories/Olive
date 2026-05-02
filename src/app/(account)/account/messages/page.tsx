@@ -26,7 +26,7 @@ export default async function AccountMessages() {
           <p className="font-display italic text-olive-700 text-2xl">
             Start a hire to open a thread.
           </p>
-          <Link href="/hire" className="btn btn-clay mt-6">Start a hire</Link>
+          <Link href="/hire" className="btn mt-6">Start a hire</Link>
         </div>
       ) : (
         <ul className="divide-y divide-[color:var(--color-rule-soft)] border-y border-[color:var(--color-rule-soft)]">

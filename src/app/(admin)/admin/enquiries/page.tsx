@@ -1,5 +1,6 @@
-import { Mail, Calendar, ArrowUpRight } from "lucide-react";
+import { Mail, Calendar } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
+import { EnquiryRowActions } from "@/components/admin/EnquiryRowActions";
 import { getEnquiries } from "@/services/admin/pipeline";
 import { formatDate } from "@/lib/format";
 
@@ -56,13 +57,12 @@ export default async function AdminEnquiries() {
                     {e.message}
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 shrink-0">
-                  <button className="btn btn-clay !py-2.5 !text-[12px]">Reply</button>
-                  <button className="btn btn-secondary !py-2.5 !text-[12px]">
-                    Convert
-                    <ArrowUpRight className="h-3 w-3" strokeWidth={1.5} />
-                  </button>
-                </div>
+                <EnquiryRowActions
+                  enquiryId={e.id}
+                  email={e.email}
+                  name={e.name}
+                  message={e.message}
+                />
               </div>
             </li>
           ))}

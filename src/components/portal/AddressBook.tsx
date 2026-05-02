@@ -137,7 +137,7 @@ function AddressForm({
           <X className="h-3 w-3" strokeWidth={1.5} />
           Cancel
         </button>
-        <button type="submit" disabled={pending} className={cn("btn btn-clay !py-2.5 !text-[12px]", pending && "opacity-70")}>
+        <button type="submit" disabled={pending} className={cn("btn !py-2.5 !text-[12px]", pending && "opacity-70")}>
           {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" strokeWidth={1.5} />}
           Save
         </button>

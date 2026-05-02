@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { ProductForm } from "@/components/admin/ProductForm";
-import { getProductBySlug } from "@/services/catalogue";
+import { getAdminProductBySlug } from "@/services/admin/products-read";
 
 type Params = { slug: string };
 
@@ -14,7 +14,9 @@ export default async function AdminProductEditor({
 }) {
   const { slug } = await params;
   const isNew = slug === "new";
-  const product = isNew ? null : await getProductBySlug(slug);
+  // Admin-scope read: any status, including draft + archived. Customer
+  // catalogue reads still filter by `active` separately.
+  const product = isNew ? null : await getAdminProductBySlug(slug);
   if (!isNew && !product) notFound();
 
   return (

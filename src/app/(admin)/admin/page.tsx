@@ -52,7 +52,7 @@ export default async function AdminDashboard() {
               <Bell className="h-3.5 w-3.5" strokeWidth={1.5} />
               Inbox
             </Link>
-            <Link href="/admin/bookings" className="btn btn-clay !py-3">
+            <Link href="/admin/bookings" className="btn !py-3">
               All bookings
             </Link>
           </>

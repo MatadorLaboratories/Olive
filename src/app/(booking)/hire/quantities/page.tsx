@@ -86,7 +86,7 @@ export default async function BookingQuantitiesPage() {
           </div>
 
           <div className="mt-12 flex items-center gap-3">
-            <Link href="/hire/details" className="btn btn-clay">
+            <Link href="/hire/details" className="btn">
               Continue to details
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
             </Link>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontSans } from "@/lib/fonts";
 import { site } from "@/config/site";
 import { cn } from "@/lib/cn";
+import { Reveal } from "@/components/system/Reveal";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -52,7 +53,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-NZ" className={cn(fontDisplay.variable, fontSans.variable)}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Reveal />
+      </body>
     </html>
   );
 }

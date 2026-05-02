@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; email?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, email } = await searchParams;
 
   return (
     <div>
@@ -25,7 +25,7 @@ export default async function LoginPage({
       </p>
 
       <div className="mt-10">
-        <SignInForm next={next} />
+        <SignInForm next={next} defaultEmail={email} />
       </div>
 
       <div className="my-10 flex items-center gap-4">
@@ -35,7 +35,19 @@ export default async function LoginPage({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Link href={`/signup${next ? `?next=${encodeURIComponent(next)}` : ""}`} className="btn btn-secondary !py-3">
+        <Link
+          href={`/signup${
+            next || email
+              ? `?${[
+                  next ? `next=${encodeURIComponent(next)}` : "",
+                  email ? `email=${encodeURIComponent(email)}` : "",
+                ]
+                  .filter(Boolean)
+                  .join("&")}`
+              : ""
+          }`}
+          className="btn btn-secondary !py-3"
+        >
           Create account
         </Link>
         <Link href="/trade/apply" className="btn btn-secondary !py-3">Trade application</Link>

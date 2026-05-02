@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -44,34 +45,39 @@ export default async function AdminWholesale() {
               ) : (
                 <ul className="space-y-3">
                   {items.map((o) => (
-                    <li key={o.id} className="rounded-md border border-[color:var(--color-rule-soft)] bg-cream-50 p-3 hover:border-olive-300 transition-colors">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <p className="font-display text-olive-900 truncate text-sm">
-                          {o.businessName ?? o.contactName ?? o.reference}
+                    <li key={o.id}>
+                      <Link
+                        href={`/admin/wholesale/${o.reference}`}
+                        className="block rounded-md border border-[color:var(--color-rule-soft)] bg-cream-50 p-3 hover:border-olive-300 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <p className="font-display text-olive-900 truncate text-sm">
+                            {o.businessName ?? o.contactName ?? o.reference}
+                          </p>
+                          <StatusBadge kind="custom" value={o.status} />
+                        </div>
+                        <p className="text-[11px] uppercase tracking-[0.12em] text-olive-500 truncate">
+                          {o.fabric} · {o.edgeStyle} · {o.colour}
                         </p>
-                        <StatusBadge kind="custom" value={o.status} />
-                      </div>
-                      <p className="text-[11px] uppercase tracking-[0.12em] text-olive-500 truncate">
-                        {o.fabric} · {o.edgeStyle} · {o.colour}
-                      </p>
-                      <p className="text-[11px] text-olive-600 mt-2 tabular">
-                        {o.quantity ? `${o.quantity} pcs` : o.quantityTier}
-                        {o.quoteTotalCents && <span className="text-clay-600"> · {formatMoney(o.quoteTotalCents)}</span>}
-                      </p>
-                      {o.preferredDeadline && (
-                        <p className="text-[11px] text-olive-500 mt-1">
-                          Deadline {formatDate(o.preferredDeadline, "short")}
+                        <p className="text-[11px] text-olive-600 mt-2 tabular">
+                          {o.quantity ? `${o.quantity} pcs` : o.quantityTier}
+                          {o.quoteTotalCents && <span className="text-clay-600"> · {formatMoney(o.quoteTotalCents)}</span>}
                         </p>
-                      )}
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className="text-[10px] uppercase tracking-[0.12em] text-olive-500 tabular">
-                          {o.reference}
-                        </span>
-                        <button className="text-[11px] uppercase tracking-[0.12em] text-olive-700 hover:text-clay-500 inline-flex items-center gap-1">
-                          Open
-                          <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
-                        </button>
-                      </div>
+                        {o.preferredDeadline && (
+                          <p className="text-[11px] text-olive-500 mt-1">
+                            Deadline {formatDate(o.preferredDeadline, "short")}
+                          </p>
+                        )}
+                        <div className="mt-3 flex items-center justify-between">
+                          <span className="text-[10px] uppercase tracking-[0.12em] text-olive-500 tabular">
+                            {o.reference}
+                          </span>
+                          <span className="text-[11px] uppercase tracking-[0.12em] text-olive-700 group-hover:text-clay-500 inline-flex items-center gap-1">
+                            Open
+                            <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
+                          </span>
+                        </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>

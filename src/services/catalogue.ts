@@ -89,7 +89,8 @@ function applyFilter(
 }
 
 // Maps a snake_case Supabase row → camelCase domain `Product`.
-function rowToProduct(row: Record<string, unknown>): Product {
+// Exported so admin-scope reads (which select *all* statuses) can reuse it.
+export function rowToProduct(row: Record<string, unknown>): Product {
   return {
     id: String(row.id),
     slug: String(row.slug),

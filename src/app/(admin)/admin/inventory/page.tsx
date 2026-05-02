@@ -1,6 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Boxes, Wrench, Ban, Archive, AlertCircle } from "lucide-react";
+import {
+  AlertCircle,
+  Archive,
+  Ban,
+  Boxes,
+  Plus,
+  Wrench,
+} from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { StatCard } from "@/components/admin/StatCard";
 import { getInventoryRows } from "@/services/admin/inventory";
@@ -27,6 +34,20 @@ export default async function AdminInventory() {
         eyebrow="Inventory"
         title={<>Stock, <span className="italic font-light">at a glance.</span></>}
         description={`${rows.length} SKUs · ${totalPieces.toLocaleString()} pieces total · estimated stock value ${formatMoney(stockValue)}.`}
+        actions={
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/products"
+              className="btn btn-secondary !py-3"
+            >
+              Manage catalogue
+            </Link>
+            <Link href="/admin/products/new" className="btn !py-3">
+              <Plus className="h-3.5 w-3.5" strokeWidth={1.5} />
+              New product
+            </Link>
+          </div>
+        }
       />
 
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-5">

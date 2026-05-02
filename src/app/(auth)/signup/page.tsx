@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; email?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, email } = await searchParams;
 
   return (
     <div>
@@ -27,12 +27,26 @@ export default async function SignupPage({
       </p>
 
       <div className="mt-10">
-        <SignUpForm next={next} />
+        <SignUpForm next={next} defaultEmail={email} />
       </div>
 
       <p className="mt-8 text-sm text-olive-700">
         Already have an account?{" "}
-        <Link href={`/login${next ? `?next=${encodeURIComponent(next)}` : ""}`} className="lnk">Sign in</Link>
+        <Link
+          href={`/login${
+            next || email
+              ? `?${[
+                  next ? `next=${encodeURIComponent(next)}` : "",
+                  email ? `email=${encodeURIComponent(email)}` : "",
+                ]
+                  .filter(Boolean)
+                  .join("&")}`
+              : ""
+          }`}
+          className="lnk"
+        >
+          Sign in
+        </Link>
       </p>
     </div>
   );

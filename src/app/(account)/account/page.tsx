@@ -1,14 +1,17 @@
 import Link from "next/link";
-import { ArrowUpRight, Calendar, CreditCard, FileText, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Calendar, CreditCard, FileText, Sparkles } from "lucide-react";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { getBookingsForCurrentUser } from "@/services/bookings-read";
 import { getDocumentsForCurrentUser } from "@/services/documents";
+import { getCustomOrdersForCurrentUser } from "@/services/custom-orders-read";
+import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatDate, formatMoney } from "@/lib/format";
 
 export default async function AccountDashboard() {
-  const [bookings, documents] = await Promise.all([
+  const [bookings, documents, customOrders] = await Promise.all([
     getBookingsForCurrentUser(),
     getDocumentsForCurrentUser(),
+    getCustomOrdersForCurrentUser(),
   ]);
   const upcoming = bookings.find(
     (b) => !["completed", "cancelled", "archived"].includes(b.status),
@@ -17,6 +20,21 @@ export default async function AccountDashboard() {
   const outstanding = upcoming
     ? upcoming.totalCents - upcoming.depositPaidCents - upcoming.finalPaidCents
     : 0;
+
+  const activeCustomOrders = customOrders.filter(
+    (o) => !["completed", "cancelled"].includes(o.status),
+  );
+
+  // Active quotes that still need money — surfaced as documents in the
+  // documents area, so we count them under "Documents" too.
+  const activeQuoteCount = customOrders.filter((o) => {
+    if (!["quote_sent", "deposit_paid", "in_production", "ready"].includes(o.status))
+      return false;
+    const quote = o.quoteTotalCents ?? 0;
+    if (quote <= 0) return false;
+    return quote - (o.totalPaidCents ?? 0) > 0;
+  }).length;
+  const documentsHeadcount = documents.length + activeQuoteCount;
 
   const daysUntil = upcoming
     ? differenceInCalendarDays(parseISO(upcoming.eventDate), new Date())
@@ -59,8 +77,16 @@ export default async function AccountDashboard() {
             icon: CreditCard,
             href: "/account/bookings",
           },
-          { label: "Documents", value: String(documents.length), icon: FileText, href: "/account/documents" },
-          { label: "Studio messages", value: "0 new", icon: MessageCircle, href: "/account/messages" },
+          {
+            label: "Custom orders",
+            value:
+              activeCustomOrders.length > 0
+                ? String(activeCustomOrders.length)
+                : "—",
+            icon: Sparkles,
+            href: "/account/custom-orders",
+          },
+          { label: "Documents", value: String(documentsHeadcount), icon: FileText, href: "/account/documents" },
         ].map((c) => (
           <Link
             key={c.label}
@@ -120,7 +146,68 @@ export default async function AccountDashboard() {
           <p className="font-display text-2xl text-olive-900 italic font-light leading-snug">
             Nothing on the calendar yet.
           </p>
-          <Link href="/hire" className="btn btn-clay mt-6">Start a hire</Link>
+          <Link href="/hire" className="btn mt-6">Start a hire</Link>
+        </section>
+      )}
+
+      {activeCustomOrders.length > 0 && (
+        <section className="card p-8">
+          <div className="flex items-baseline justify-between mb-6">
+            <h2 className="font-display text-2xl text-olive-900">
+              Custom <span className="italic font-light">orders.</span>
+            </h2>
+            <Link
+              href="/account/custom-orders"
+              className="text-[12px] uppercase tracking-[0.14em] text-olive-700 hover:text-clay-500 inline-flex items-center gap-1"
+            >
+              All custom orders
+              <ArrowUpRight className="h-3 w-3" strokeWidth={1.5} />
+            </Link>
+          </div>
+          <ul className="divide-y divide-[color:var(--border-hairline)]">
+            {activeCustomOrders.slice(0, 3).map((o) => {
+              const customOutstanding =
+                (o.quoteTotalCents ?? 0) - (o.totalPaidCents ?? 0);
+              return (
+                <li key={o.id}>
+                  <Link
+                    href={`/account/custom-orders/${o.reference}`}
+                    className="grid grid-cols-12 gap-4 py-4 items-baseline group hover:bg-cream-50/40 transition-colors -mx-2 px-2 rounded-md"
+                  >
+                    <div className="col-span-12 md:col-span-3">
+                      <p className="font-display text-lg text-olive-900 tabular">
+                        {o.reference}
+                      </p>
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-olive-500">
+                        {formatDate(o.createdAt, "short")}
+                      </p>
+                    </div>
+                    <div className="col-span-12 md:col-span-4 text-olive-800 capitalize text-sm">
+                      {[o.fabric, o.edgeStyle, o.colour].filter(Boolean).join(" · ") || "—"}
+                    </div>
+                    <div className="col-span-6 md:col-span-3 text-sm">
+                      {o.quoteTotalCents ? (
+                        customOutstanding > 0 ? (
+                          <span className="text-clay-600 tabular">
+                            {formatMoney(customOutstanding)} due
+                          </span>
+                        ) : (
+                          <span className="text-olive-700">Paid</span>
+                        )
+                      ) : (
+                        <span className="text-olive-700 italic font-light">
+                          Awaiting quote
+                        </span>
+                      )}
+                    </div>
+                    <div className="col-span-6 md:col-span-2 flex justify-end">
+                      <StatusBadge kind="custom" value={o.status} />
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
     </div>

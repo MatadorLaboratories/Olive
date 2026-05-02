@@ -7,6 +7,8 @@ import { cn } from "@/lib/cn";
 import { formatMoney } from "@/lib/format";
 import { submitCustomOrder, type CustomOrderInput } from "@/services/enquiries";
 import { uploadCustomBrandFile } from "@/services/custom-uploads";
+import type { ComputedQuote } from "@/services/custom-order-pricing";
+import { QuoteOutcome } from "./QuoteOutcome";
 
 export type BuilderOptions = {
   fabrics: { id: string; label: string }[];
@@ -58,7 +60,9 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
   const [step, setStep] = useState<Step>(1);
   const [draft, setDraft] = useState<Draft>(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<
+    null | { reference: string; loggedIn: boolean; quote: ComputedQuote }
+  >(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -120,11 +124,34 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
         if (result.fieldErrors) setErrors(result.fieldErrors);
         return;
       }
-      setSubmitted(true);
+      if (!result.data) return;
+      setSubmitted(result.data);
     });
   };
 
-  if (submitted) return <SubmittedState draft={draft} />;
+  if (submitted) {
+    const buildSummary = [
+      { label: "Customer", value: labelFor(options.customerTypes, draft.customerType) },
+      { label: "Fabric", value: labelFor(options.fabrics, draft.fabric) },
+      { label: "Edge", value: labelFor(options.edges, draft.edgeStyle) },
+      { label: "Colour", value: labelFor(options.colours, draft.colour) },
+      { label: "Tier", value: labelFor(options.quantityTiers, draft.quantityTier) },
+    ];
+    if (qty > 0) buildSummary.push({ label: "Quantity", value: `${qty} pcs` });
+    if (draft.preferredDeadline)
+      buildSummary.push({ label: "Deadline", value: draft.preferredDeadline });
+
+    return (
+      <QuoteOutcome
+        reference={submitted.reference}
+        loggedIn={submitted.loggedIn}
+        contactName={draft.contactName}
+        contactEmail={draft.contactEmail}
+        quote={submitted.quote}
+        buildSummary={buildSummary}
+      />
+    );
+  }
 
   return (
     <section className="bg-canvas pb-32">
@@ -348,7 +375,7 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
                   type="button"
                   onClick={next}
                   disabled={!canAdvance[step]}
-                  className={cn("btn btn-clay", !canAdvance[step] && "opacity-40 cursor-not-allowed")}
+                  className={cn("btn", !canAdvance[step] && "opacity-40 cursor-not-allowed")}
                 >
                   Continue
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
@@ -358,7 +385,7 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
                   type="button"
                   onClick={submit}
                   disabled={pending}
-                  className={cn("btn btn-clay", pending && "opacity-70")}
+                  className={cn("btn", pending && "opacity-70")}
                 >
                   {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" strokeWidth={1.5} />}
                   Send to studio
@@ -599,23 +626,3 @@ function FileSlot(props: {
   );
 }
 
-function SubmittedState({ draft }: { draft: Draft }) {
-  return (
-    <section className="bg-canvas py-24 lg:py-32">
-      <div className="shell-narrow text-center">
-        <p className="eyebrow text-clay-500 mb-6">Sent</p>
-        <h1 className="font-display text-display-xl text-olive-900 leading-[0.96]">
-          Got it. <span className="italic font-light">We'll be in touch.</span>
-        </h1>
-        <p className="mt-8 text-olive-800/85 text-lg leading-relaxed max-w-lg mx-auto">
-          Thanks {draft.contactName.split(" ")[0] ?? ""}. We've sent your custom napkin enquiry through to the studio.
-          You'll hear back from us within one business day.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/portfolio" className="btn btn-secondary">Browse the portfolio</Link>
-          <Link href="/" className="btn btn-clay">Back to home</Link>
-        </div>
-      </div>
-    </section>
-  );
-}

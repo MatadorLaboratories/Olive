@@ -108,4 +108,5 @@ export async function updateDraftQuantity(productId: string, quantity: number) {
   });
   revalidatePath("/hire/products");
   revalidatePath("/hire/quantities");
+  revalidatePath("/cart");
 }

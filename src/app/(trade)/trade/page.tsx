@@ -65,7 +65,7 @@ export default async function TradeDashboard() {
       <section className="card p-7">
         <h2 className="font-display text-2xl text-olive-900 mb-6">Quick actions</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/hire" className="btn btn-clay">New booking</Link>
+          <Link href="/hire" className="btn">New booking</Link>
           <Link href="/trade/bookings" className="btn btn-secondary">All bookings</Link>
           <Link href="/trade/preferences" className="btn btn-secondary">Saved venues & details</Link>
           <Link href="/trade/messages" className="btn btn-ghost">

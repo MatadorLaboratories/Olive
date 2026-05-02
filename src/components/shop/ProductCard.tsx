@@ -1,12 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
 import { formatMoney } from "@/lib/format";
 import type { Product } from "@/types/domain";
 
+/**
+ * Editorial product card. Image, then a hairline-anchored caption row.
+ * No floating overlay pills, no hover-arrow garnish — the underlying frame
+ * has its own gentle hover scale.
+ */
 export function ProductCard({ product }: { product: Product }) {
   const hasHire = typeof product.hirePriceCents === "number";
   const hasRetail = typeof product.retailPriceCents === "number";
+  const kindLabel =
+    product.kind === "retail"
+      ? "Shop"
+      : product.kind === "hire"
+        ? "Hire"
+        : "Hire & Shop";
 
   return (
     <Link href={`/shop/${product.slug}`} className="group block">
@@ -24,40 +34,35 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name}
           </div>
         )}
-        <div className="absolute top-4 left-4 right-4 flex items-center justify-between text-cream-50">
-          {product.kind === "retail" ? (
-            <span className="pill !border-cream-50/40 !text-cream-50 backdrop-blur-sm">Shop</span>
-          ) : product.kind === "hire" ? (
-            <span className="pill !border-cream-50/40 !text-cream-50 backdrop-blur-sm">Hire</span>
-          ) : (
-            <span className="pill !border-cream-50/40 !text-cream-50 backdrop-blur-sm">Hire & Shop</span>
-          )}
-          <ArrowUpRight
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 opacity-0 group-hover:opacity-100"
-            strokeWidth={1.5}
-          />
-        </div>
       </div>
-      <div className="mt-4 flex items-baseline justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="font-display text-xl text-olive-900 leading-tight">
+
+      <div className="mt-5 pt-4 border-t border-[color:var(--border-hairline)]">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="font-display text-[clamp(1.0625rem,1.4vw,1.25rem)] text-olive-900 leading-tight">
             {product.name}
-            {product.colour && <span className="text-olive-600"> — {product.colour}</span>}
+            {product.colour && (
+              <span className="text-olive-600"> — {product.colour}</span>
+            )}
           </h3>
-          {product.fabric && (
-            <p className="text-[12px] uppercase tracking-[0.12em] text-olive-500 mt-1 truncate">
-              {product.fabric}
-            </p>
-          )}
+          <span className="text-[10px] uppercase tracking-[0.18em] text-olive-500 shrink-0 mt-1">
+            {kindLabel}
+          </span>
         </div>
-        <div className="text-right whitespace-nowrap shrink-0">
+
+        {product.fabric && (
+          <p className="text-[12px] text-olive-600 mt-1.5 truncate leading-snug">
+            {product.fabric}
+          </p>
+        )}
+
+        <div className="mt-3 flex items-baseline justify-between gap-3 text-[11px] uppercase tracking-[0.14em]">
           {hasHire && (
-            <p className="text-[12px] uppercase tracking-[0.12em] text-olive-700 tabular">
+            <p className="text-olive-700 tabular">
               Hire {formatMoney(product.hirePriceCents!)}
             </p>
           )}
           {hasRetail && (
-            <p className="text-[12px] uppercase tracking-[0.12em] text-clay-600 tabular">
+            <p className="text-clay-600 tabular ml-auto">
               Shop {formatMoney(product.retailPriceCents!)}
             </p>
           )}

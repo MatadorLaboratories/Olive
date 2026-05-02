@@ -46,14 +46,38 @@ export async function getCustomOrders(): Promise<CustomOrder[]> {
     .select("*")
     .order("created_at", { ascending: false });
   if (error || !data) return [];
-  return (data as Array<Record<string, unknown>>).map((row) => ({
+  return (data as Array<Record<string, unknown>>).map(rowToCustomOrder);
+}
+
+/** Single custom-order lookup (admin scope). */
+export async function getCustomOrderByReference(
+  reference: string,
+): Promise<CustomOrder | null> {
+  if (!supabaseAvailable()) {
+    return seedCustomOrders.find((o) => o.reference === reference) ?? null;
+  }
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("custom_orders")
+    .select("*")
+    .eq("reference", reference)
+    .maybeSingle();
+  if (error || !data) return null;
+  return rowToCustomOrder(data as Record<string, unknown>);
+}
+
+/** Map a `custom_orders` row into the app-side `CustomOrder` type. */
+export function rowToCustomOrder(row: Record<string, unknown>): CustomOrder {
+  return {
     id: String(row.id),
     reference: String(row.reference),
     status: row.status as CustomOrder["status"],
+    customerId: (row.customer_id as string | null) ?? null,
     customerType: (row.customer_type as string | null) ?? null,
     businessName: (row.business_name as string | null) ?? null,
     contactName: (row.contact_name as string | null) ?? null,
     contactEmail: (row.contact_email as string | null) ?? null,
+    contactPhone: (row.contact_phone as string | null) ?? null,
     fabric: (row.fabric as string | null) ?? null,
     edgeStyle: (row.edge_style as string | null) ?? null,
     colour: (row.colour as string | null) ?? null,
@@ -61,12 +85,18 @@ export async function getCustomOrders(): Promise<CustomOrder[]> {
     quantity: (row.quantity as number | null) ?? null,
     preferredDeadline: (row.preferred_deadline as string | null) ?? null,
     brandNotes: (row.brand_notes as string | null) ?? null,
+    internalNotes: (row.internal_notes as string | null) ?? null,
     logoUrl: (row.logo_url as string | null) ?? null,
     inspirationUrls: (row.inspiration_urls as string[] | null) ?? [],
     quoteTotalCents: (row.quote_total_cents as number | null) ?? null,
-    paymentSetting: (row.payment_setting as CustomOrder["paymentSetting"]) ?? null,
+    depositPaidCents: (row.deposit_paid_cents as number | null) ?? 0,
+    totalPaidCents: (row.total_paid_cents as number | null) ?? 0,
+    paidAt: (row.paid_at as string | null) ?? null,
+    paymentSetting:
+      (row.payment_setting as CustomOrder["paymentSetting"]) ?? null,
     createdAt: String(row.created_at ?? ""),
-  }));
+    updatedAt: String(row.updated_at ?? row.created_at ?? ""),
+  };
 }
 
 // ---------- seed ----------
@@ -102,10 +132,12 @@ const seedCustomOrders: CustomOrder[] = [
     id: "co1",
     reference: "OLV-CO-1184",
     status: "awaiting_quote",
+    customerId: null,
     customerType: "restaurant",
     businessName: "Margot Group",
     contactName: "Reuben Sharp",
     contactEmail: "ops@margot.co.nz",
+    contactPhone: null,
     fabric: "linen",
     edgeStyle: "scallop",
     colour: "olive",
@@ -113,20 +145,27 @@ const seedCustomOrders: CustomOrder[] = [
     quantity: 500,
     preferredDeadline: "2026-08-01",
     brandNotes: "Embroidered M in clay thread on lower-right. Match Pantone 174 C.",
+    internalNotes: null,
     logoUrl: null,
     inspirationUrls: [],
     quoteTotalCents: null,
+    depositPaidCents: 0,
+    totalPaidCents: 0,
+    paidAt: null,
     paymentSetting: "deposit",
     createdAt: "2026-04-26T10:00:00Z",
+    updatedAt: "2026-04-26T10:00:00Z",
   },
   {
     id: "co2",
     reference: "OLV-CO-1182",
     status: "in_production",
+    customerId: null,
     customerType: "venue",
     businessName: "Glenorchy Estate",
     contactName: "Operations",
     contactEmail: "ops@glenorchyestate.nz",
+    contactPhone: null,
     fabric: "cotton_rayon",
     edgeStyle: "plain",
     colour: "bone",
@@ -134,10 +173,15 @@ const seedCustomOrders: CustomOrder[] = [
     quantity: 240,
     preferredDeadline: "2026-06-01",
     brandNotes: null,
+    internalNotes: null,
     logoUrl: null,
     inspirationUrls: [],
     quoteTotalCents: 295200,
+    depositPaidCents: 147600,
+    totalPaidCents: 147600,
+    paidAt: "2026-03-22T08:30:00Z",
     paymentSetting: "deposit",
     createdAt: "2026-03-18T14:00:00Z",
+    updatedAt: "2026-03-22T08:30:00Z",
   },
 ];

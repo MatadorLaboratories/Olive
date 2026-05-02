@@ -39,7 +39,7 @@ export default async function TradeLayout({
             </p>
             <div className="mt-8 flex justify-center gap-3">
               <Link href="/" className="btn btn-secondary">Back to home</Link>
-              <Link href="/about/contact" className="btn btn-clay">Talk to the studio</Link>
+              <Link href="/about/contact" className="btn">Talk to the studio</Link>
             </div>
           </div>
         </div>

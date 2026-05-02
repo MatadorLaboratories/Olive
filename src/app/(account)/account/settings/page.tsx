@@ -130,7 +130,7 @@ export default async function AccountSettingsPage({
             </div>
 
             <div className="pt-2 flex items-center gap-3">
-              <button type="submit" className="btn btn-clay">
+              <button type="submit" className="btn">
                 Save details
                 <Save className="h-3.5 w-3.5" strokeWidth={1.5} />
               </button>

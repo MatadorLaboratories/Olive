@@ -160,10 +160,12 @@ export interface CustomOrder {
   id: string;
   reference: string;
   status: CustomOrderStatus;
+  customerId: string | null;
   customerType: string | null;
   businessName: string | null;
   contactName: string | null;
   contactEmail: string | null;
+  contactPhone: string | null;
   fabric: string | null;
   edgeStyle: string | null;
   colour: string | null;
@@ -171,11 +173,16 @@ export interface CustomOrder {
   quantity: number | null;
   preferredDeadline: string | null;
   brandNotes: string | null;
+  internalNotes: string | null;
   logoUrl: string | null;
   inspirationUrls: string[];
   quoteTotalCents: number | null;
+  depositPaidCents: number;
+  totalPaidCents: number;
+  paidAt: string | null;
   paymentSetting: "quote_only" | "deposit" | "full_payment" | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 // ---------- Misc ----------

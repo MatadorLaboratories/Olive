@@ -97,7 +97,7 @@ export function EnquiryForm({
       <button
         type="submit"
         disabled={pending}
-        className={cn("btn btn-clay !py-4", pending && "opacity-70")}
+        className={cn("btn !py-4", pending && "opacity-70")}
       >
         {pending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />

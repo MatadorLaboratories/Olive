@@ -97,7 +97,7 @@ export default async function BookingDetailsPage({
               />
             </div>
             <div className="pt-2 flex items-center gap-3">
-              <button type="submit" className="btn btn-clay">
+              <button type="submit" className="btn">
                 Continue to your account
                 <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />
               </button>

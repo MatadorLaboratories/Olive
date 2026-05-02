@@ -27,7 +27,7 @@ export default async function TradeBookings() {
       {rows.length === 0 ? (
         <div className="card p-10 text-center">
           <p className="font-display italic text-olive-700 text-2xl">No trade bookings yet.</p>
-          <Link href="/hire" className="btn btn-clay mt-6">Book one for a client</Link>
+          <Link href="/hire" className="btn mt-6">Book one for a client</Link>
         </div>
       ) : (
         <div className="card overflow-hidden">

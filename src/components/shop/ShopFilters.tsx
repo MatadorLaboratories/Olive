@@ -4,14 +4,9 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { cn } from "@/lib/cn";
 
-export type ShopFilterOptions = {
-  categories: string[];
-  colours: string[];
-};
-
 /**
- * Editorial filter rail — categories on the left, colours below, with
- * URL-driven state so filters survive deep links and back-button.
+ * Editorial filter rail — hairline-divided groups, small rectangular tags.
+ * URL-driven state so filters survive deep links and the back button.
  */
 export function ShopFilters({
   categories,
@@ -40,7 +35,7 @@ export function ShopFilters({
     startTransition(() => router.push(pathname ?? "/shop", { scroll: false }));
   };
 
-  const Pill = ({
+  const Tag = ({
     label,
     active: isActive,
     onClick,
@@ -53,10 +48,10 @@ export function ShopFilters({
       type="button"
       onClick={onClick}
       className={cn(
-        "pill cursor-pointer transition-colors",
+        "h-7 px-3 rounded-sm border text-[11px] uppercase tracking-[0.12em] transition-colors",
         isActive
-          ? "!bg-olive-900 !text-cream-50 !border-olive-900"
-          : "hover:border-olive-700 hover:text-olive-900",
+          ? "bg-olive-900 border-olive-900 text-cream-50"
+          : "border-[color:var(--border-base)] text-olive-800 hover:border-olive-700 hover:text-olive-900",
       )}
     >
       {label}
@@ -66,51 +61,83 @@ export function ShopFilters({
   const hasFilters = active.kind || active.category || active.colour;
 
   return (
-    <div className="space-y-8">
-      {/* Kind */}
-      <div>
-        <p className="eyebrow text-olive-600 mb-3">Browse</p>
-        <div className="flex flex-wrap gap-2">
-          <Pill label="All" active={!active.kind} onClick={() => toggle("kind", active.kind ?? "")} />
-          <Pill label="Hire" active={active.kind === "hire"} onClick={() => toggle("kind", "hire")} />
-          <Pill label="Shop" active={active.kind === "retail"} onClick={() => toggle("kind", "retail")} />
+    <div>
+      <Group label="Browse">
+        <div className="flex flex-wrap gap-1.5">
+          <Tag
+            label="All"
+            active={!active.kind}
+            onClick={() => toggle("kind", active.kind ?? "")}
+          />
+          <Tag
+            label="Hire"
+            active={active.kind === "hire"}
+            onClick={() => toggle("kind", "hire")}
+          />
+          <Tag
+            label="Shop"
+            active={active.kind === "retail"}
+            onClick={() => toggle("kind", "retail")}
+          />
         </div>
-      </div>
+      </Group>
 
-      {/* Category */}
       {categories.length > 0 && (
-        <div>
-          <p className="eyebrow text-olive-600 mb-3">Category</p>
-          <div className="flex flex-wrap gap-2">
+        <Group label="Category">
+          <div className="flex flex-wrap gap-1.5">
             {categories.map((c) => (
-              <Pill key={c} label={prettify(c)} active={active.category === c} onClick={() => toggle("category", c)} />
+              <Tag
+                key={c}
+                label={prettify(c)}
+                active={active.category === c}
+                onClick={() => toggle("category", c)}
+              />
             ))}
           </div>
-        </div>
+        </Group>
       )}
 
-      {/* Colour */}
       {colours.length > 0 && (
-        <div>
-          <p className="eyebrow text-olive-600 mb-3">Colour</p>
-          <div className="flex flex-wrap gap-2">
+        <Group label="Colour">
+          <div className="flex flex-wrap gap-1.5">
             {colours.map((c) => (
-              <Pill key={c} label={c} active={active.colour === c} onClick={() => toggle("colour", c)} />
+              <Tag
+                key={c}
+                label={c}
+                active={active.colour === c}
+                onClick={() => toggle("colour", c)}
+              />
             ))}
           </div>
-        </div>
+        </Group>
       )}
 
       {hasFilters && (
         <button
           type="button"
           onClick={clearAll}
-          className="text-[12px] uppercase tracking-[0.12em] text-olive-700 hover:text-clay-500 transition-colors"
+          className="mt-7 inline-flex items-baseline gap-3 text-[11px] uppercase tracking-[0.16em] text-olive-700 hover:text-clay-600 transition-colors"
         >
+          <span className="inline-block w-6 h-px bg-current" />
           Clear filters
         </button>
       )}
     </div>
+  );
+}
+
+function Group({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="py-6 first:pt-0 border-t border-[color:var(--border-hairline)] first:border-t-0">
+      <p className="eyebrow text-olive-600 mb-3">{label}</p>
+      {children}
+    </section>
   );
 }
 

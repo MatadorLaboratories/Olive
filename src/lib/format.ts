@@ -5,7 +5,7 @@
  * UI-side helpers convert to strings; never do float math on prices.
  */
 
-const NZD = new Intl.NumberFormat("en-NZ", {
+const NZD_WHOLE = new Intl.NumberFormat("en-NZ", {
   style: "currency",
   currency: "NZD",
   maximumFractionDigits: 0,
@@ -15,11 +15,28 @@ const NZD_PRECISE = new Intl.NumberFormat("en-NZ", {
   style: "currency",
   currency: "NZD",
   minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
-export function formatMoney(cents: number, opts: { precise?: boolean } = {}): string {
+/**
+ * Format a money amount stored in cents.
+ *
+ * Default behaviour:
+ *   - whole-dollar amounts render with no decimal: "$1,420"
+ *   - fractional amounts render with two decimals: "$3.50"
+ *
+ * `{ precise: true }` forces 2dp regardless. `{ whole: true }` forces the
+ * older whole-dollar truncation if a surface explicitly wants it.
+ */
+export function formatMoney(
+  cents: number,
+  opts: { precise?: boolean; whole?: boolean } = {},
+): string {
   const dollars = cents / 100;
-  return opts.precise ? NZD_PRECISE.format(dollars) : NZD.format(dollars);
+  if (opts.precise) return NZD_PRECISE.format(dollars);
+  if (opts.whole) return NZD_WHOLE.format(dollars);
+  // Auto: whole when amount is whole, else 2dp.
+  return Number.isInteger(dollars) ? NZD_WHOLE.format(dollars) : NZD_PRECISE.format(dollars);
 }
 
 export function formatMoneyRange(minCents: number, maxCents: number): string {

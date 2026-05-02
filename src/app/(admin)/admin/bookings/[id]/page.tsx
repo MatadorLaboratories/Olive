@@ -8,6 +8,7 @@ import { BookingStatusControls } from "@/components/admin/BookingStatusControls"
 import { InternalNotes } from "@/components/admin/InternalNotes";
 import { ShippingActions } from "@/components/admin/ShippingActions";
 import { getBookingById } from "@/services/admin/bookings";
+import { ensureBookingThread } from "@/services/admin/messaging";
 import { getProducts } from "@/services/catalogue";
 import { CUTOFF_DAYS } from "@/services/bookings";
 import { formatDate, formatMoney } from "@/lib/format";
@@ -22,6 +23,10 @@ export default async function AdminBookingDetail({
   const { id } = await params;
   const booking = await getBookingById(id);
   if (!booking) notFound();
+
+  // Ensure a thread exists so admin's "Message thread" link is never dead.
+  // Returns the existing thread id if one already exists.
+  const threadId = await ensureBookingThread(booking.id, booking.reference);
 
   const products = await getProducts();
   const productMap = new Map(products.map((p) => [p.id, p]));
@@ -198,9 +203,12 @@ export default async function AdminBookingDetail({
             <p className="eyebrow text-olive-600 mb-4">Quick links</p>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href={`/account/bookings/${booking.reference}/messages`} className="lnk text-olive-800 inline-flex items-center gap-2">
+                <Link
+                  href={threadId ? `/admin/messages/${threadId}` : "/admin/messages"}
+                  className="lnk text-olive-800 inline-flex items-center gap-2"
+                >
                   <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.5} />
-                  Open client message thread
+                  Reply in studio inbox
                 </Link>
               </li>
               <li>

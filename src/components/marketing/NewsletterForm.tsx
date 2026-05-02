@@ -44,7 +44,7 @@ export function NewsletterForm() {
       <button
         type="submit"
         disabled={pending}
-        className={cn("btn btn-clay !rounded-none sm:!rounded-full whitespace-nowrap", pending && "opacity-70")}
+        className={cn("btn !rounded-none sm:!rounded-full whitespace-nowrap", pending && "opacity-70")}
       >
         {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <>Subscribe<ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} /></>}
       </button>

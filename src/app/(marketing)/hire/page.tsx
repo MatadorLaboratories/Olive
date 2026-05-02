@@ -64,7 +64,7 @@ export default function HirePage() {
               talking to a planner you trust. Start with the date — we'll build the rest with you.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link href="/hire/dates" className="btn btn-clay">
+              <Link href="/hire/dates" className="btn">
                 Start with dates
                 <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
               </Link>

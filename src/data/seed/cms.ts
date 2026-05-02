@@ -11,19 +11,17 @@ export type CmsBlock<T = unknown> = {
 
 export const seedCms = {
   "home.hero": {
-    eyebrow: "Premium linen hire — Queenstown, NZ",
+    eyebrow: "Premium linen hire — Queenstown, Aotearoa",
     headlineLines: ["Linen, laid", "like a love letter", "to the table."],
     supporting:
-      "Considered linen for weddings, private events and hospitality — hand-finished, beautifully laundered, delivered the length of the South Island.",
+      "A small studio dressing weddings, private events and the kind of dinners that go on too long. Hand-pressed in Queenstown, delivered the length of the South Island.",
     primaryCta: { label: "Book linen", href: "/hire" },
     secondaryCta: { label: "See real weddings", href: "/portfolio" },
     tagline: "Like the olive to your martini",
     images: {
       primary:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
-      collage:
-        "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=800&q=80",
-      tag: "Est. Queenstown",
+        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1800&q=85",
+      caption: "Eames & Co. — Glenorchy, March 2024",
     },
   },
 

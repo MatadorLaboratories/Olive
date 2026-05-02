@@ -5,6 +5,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { sendTransactional } from "@/services/email";
 import { supabaseAvailable } from "./_supabase-available";
 import { site } from "@/config/site";
+import { getCmsBlock } from "@/services/cms";
+import {
+  computeQuoteFromBuilder,
+  type ComputedQuote,
+} from "@/services/custom-order-pricing";
 
 /**
  * Until the generated Supabase types arrive (`npm run db:types`), the
@@ -107,8 +112,26 @@ export async function submitEnquiry(input: EnquiryInput): Promise<ServerActionRe
   return { ok: true };
 }
 
-/** Submit a custom napkin / hospitality order request. */
-export async function submitCustomOrder(input: CustomOrderInput): Promise<ServerActionResult> {
+/**
+ * Submit a custom-napkin / hospitality order request.
+ *
+ * Generates an auto-quote at submission time using the builder selections
+ * + CMS rate card so the customer sees a real number on the outcome
+ * screen and can pay deposit / in full immediately. The studio admin can
+ * still override the total later from `/admin/wholesale/[reference]`.
+ *
+ * When the auto-quote can't be produced (e.g. specialty edge), the row
+ * goes in at `awaiting_quote` so the studio takes over.
+ */
+export async function submitCustomOrder(
+  input: CustomOrderInput,
+): Promise<
+  ServerActionResult<{
+    reference: string;
+    loggedIn: boolean;
+    quote: ComputedQuote;
+  }>
+> {
   const parsed = customOrderSchema.safeParse(input);
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
@@ -120,15 +143,50 @@ export async function submitCustomOrder(input: CustomOrderInput): Promise<Server
   }
   const data = parsed.data;
 
+  // Compute the auto-quote up front using the same CMS options the builder
+  // saw — single source of truth for tier/fabric/edge maths.
+  const options = await getCmsBlock("hospitality.options");
+  const quote = computeQuoteFromBuilder(
+    {
+      fabric: data.fabric,
+      edgeStyle: data.edgeStyle,
+      quantityTier: data.quantityTier,
+      quantity: data.quantity ?? null,
+    },
+    {
+      fabrics: [...options.fabrics],
+      edges: [...options.edges],
+      colours: [...options.colours],
+      quantityTiers: [...options.quantityTiers],
+      customerTypes: [...options.customerTypes],
+    },
+  );
+
   // Generate a soft reference for the email & receipt page.
   const reference = `OLV-CO-${Math.floor(Math.random() * 9000 + 1000)}`;
+  let loggedIn = false;
+
+  // If we produced a numeric quote we mark the order as `quote_sent` (the
+  // customer is looking at it on screen). Otherwise we route it through
+  // `awaiting_quote` so the studio picks it up.
+  const initialStatus = quote.ok ? "quote_sent" : "awaiting_quote";
 
   if (supabaseAvailable()) {
     try {
       const supabase = await createSupabaseServerClient();
+      // If the submitter is logged in, link the row to them so it shows up
+      // in their `/account/custom-orders` view under RLS. Anonymous
+      // submissions are still allowed by policy and surface only to staff
+      // — they get linked on first login via `claimCustomOrders()`.
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      loggedIn = !!user;
+
       const { error } = await untyped(supabase.from("custom_orders")).insert({
         reference,
-        status: "new_request",
+        status: initialStatus,
+        customer_id: user?.id ?? null,
         customer_type: data.customerType,
         business_name: data.businessName,
         contact_name: data.contactName,
@@ -144,6 +202,7 @@ export async function submitCustomOrder(input: CustomOrderInput): Promise<Server
         payment_setting: data.paymentSetting,
         logo_url: data.logoUrl,
         inspiration_urls: data.inspirationUrls,
+        quote_total_cents: quote.ok ? quote.totalCents : null,
       });
       if (error) {
         console.error("[customOrder.submit] insert failed", error);
@@ -159,14 +218,14 @@ export async function submitCustomOrder(input: CustomOrderInput): Promise<Server
       await sendTransactional({
         to: site.contactEmail,
         subject: `New custom-napkin enquiry — ${reference}`,
-        html: customOrderEmailHtml(data, reference),
+        html: customOrderEmailHtml(data, reference, quote),
       });
     } catch (e) {
       console.warn("[customOrder.submit] email failed (non-fatal)", e);
     }
   }
 
-  return { ok: true, data: undefined };
+  return { ok: true, data: { reference, loggedIn, quote } };
 }
 
 // ---------- email bodies (kept simple — Phase 4 templates them) ----------
@@ -183,7 +242,13 @@ function enquiryEmailHtml(d: EnquiryInput): string {
   `;
 }
 
-function customOrderEmailHtml(d: CustomOrderInput, reference: string): string {
+function customOrderEmailHtml(
+  d: CustomOrderInput,
+  reference: string,
+  quote: ComputedQuote,
+): string {
+  const fmt = (n: number) =>
+    new Intl.NumberFormat("en-NZ", { style: "currency", currency: "NZD" }).format(n / 100);
   return `
     <h2 style="font-family:Georgia,serif;color:#2a3520">${reference} — Custom napkin enquiry</h2>
     <ul style="font-family:Inter,sans-serif">
@@ -195,6 +260,7 @@ function customOrderEmailHtml(d: CustomOrderInput, reference: string): string {
       <li><strong>Quantity tier:</strong> ${escape(d.quantityTier)}${d.quantity ? ` (${d.quantity})` : ""}</li>
       <li><strong>Deadline:</strong> ${escape(d.preferredDeadline ?? "—")}</li>
       <li><strong>Payment:</strong> ${escape(d.paymentSetting)}</li>
+      ${quote.ok ? `<li><strong>Auto-quote:</strong> ${fmt(quote.totalCents)}${quote.isIndicative ? " (indicative)" : ""}</li>` : `<li><strong>Auto-quote:</strong> — ${escape(quote.unpriceableReason ?? "needs studio")}</li>`}
     </ul>
     ${d.brandNotes ? `<p style="font-family:Inter,sans-serif;white-space:pre-line"><strong>Notes:</strong><br>${escape(d.brandNotes)}</p>` : ""}
   `;

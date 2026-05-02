@@ -139,7 +139,7 @@ export default async function ProductDetailPage({
 
               <div className="mt-10 flex flex-wrap items-center gap-3">
                 {hasHire && (
-                  <Link href="/hire/dates" className="btn btn-clay">
+                  <Link href="/hire/dates" className="btn">
                     Add to hire booking
                     <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
                   </Link>

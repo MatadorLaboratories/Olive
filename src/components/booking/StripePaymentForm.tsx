@@ -25,9 +25,15 @@ function stripePromise() {
 export function StripePaymentForm({
   clientSecret,
   reference,
+  returnPath,
+  ctaLabel,
 }: {
   clientSecret: string;
   reference: string;
+  /** Path Stripe redirects to on success. Defaults to /hire/confirmation. */
+  returnPath?: string;
+  /** Override the button copy. Defaults to "Pay deposit & confirm booking". */
+  ctaLabel?: string;
 }) {
   return (
     <Elements
@@ -58,12 +64,20 @@ export function StripePaymentForm({
         },
       }}
     >
-      <Inner reference={reference} />
+      <Inner reference={reference} returnPath={returnPath} ctaLabel={ctaLabel} />
     </Elements>
   );
 }
 
-function Inner({ reference }: { reference: string }) {
+function Inner({
+  reference,
+  returnPath,
+  ctaLabel,
+}: {
+  reference: string;
+  returnPath?: string;
+  ctaLabel?: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [pending, setPending] = useState(false);
@@ -79,10 +93,11 @@ function Inner({ reference }: { reference: string }) {
     if (!stripe || !elements) return;
     setPending(true);
     setError(null);
+    const path = returnPath ?? `/hire/confirmation?ref=${reference}`;
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/hire/confirmation?ref=${reference}`,
+        return_url: `${window.location.origin}${path}`,
       },
     });
     if (error) {
@@ -102,14 +117,14 @@ function Inner({ reference }: { reference: string }) {
       <button
         type="submit"
         disabled={!ready || pending}
-        className={cn("btn btn-clay !py-4 w-full sm:w-auto", (!ready || pending) && "opacity-70")}
+        className={cn("btn !py-4 w-full sm:w-auto", (!ready || pending) && "opacity-70")}
       >
         {pending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
         ) : (
           <Lock className="h-3.5 w-3.5" strokeWidth={1.5} />
         )}
-        Pay deposit & confirm booking
+        {ctaLabel ?? "Pay deposit & confirm booking"}
       </button>
 
       <p className="text-[11px] uppercase tracking-[0.14em] text-olive-500">

@@ -114,7 +114,7 @@ function DemoPaymentNotice({ reference, demo }: { reference: string; demo: boole
         </div>
       </div>
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Link href={`/hire/confirmation?ref=${reference}&demo=1`} className="btn btn-clay">
+        <Link href={`/hire/confirmation?ref=${reference}&demo=1`} className="btn">
           See the confirmation page
         </Link>
         <Link href="/account" className="btn btn-secondary">My account</Link>
@@ -137,7 +137,7 @@ function DepositError({ reference, message }: { reference: string | null; messag
         )}
         <div className="mt-8 flex items-center gap-3">
           <Link href="/hire/details" className="btn btn-secondary">Back to details</Link>
-          <Link href="/about/contact" className="btn btn-clay">Talk to the studio</Link>
+          <Link href="/about/contact" className="btn">Talk to the studio</Link>
         </div>
       </div>
     </BookingShell>
