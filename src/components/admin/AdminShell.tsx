@@ -19,7 +19,6 @@ import {
   BarChart3,
   Pencil,
 } from "lucide-react";
-import { signOut } from "@/services/auth";
 
 const groups = [
   {
@@ -134,7 +133,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             View public site
           </Link>
           <span aria-hidden className="text-cream-100/25">·</span>
-          <form action={signOut}>
+          <form method="post" action="/api/auth/sign-out">
             <button
               type="submit"
               className="hover:text-cream-50 transition-colors"

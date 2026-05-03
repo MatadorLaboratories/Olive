@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { cn } from "@/lib/cn";
-import { signOut } from "@/services/auth";
 
 export type PortalNavItem = {
   label: string;
@@ -48,7 +47,7 @@ export function PortalShell({
             <p className="text-[12px] text-olive-700 hidden sm:block">
               {greeting}
             </p>
-            <form action={signOut}>
+            <form method="post" action="/api/auth/sign-out">
               <button
                 type="submit"
                 className="text-[11px] uppercase tracking-[0.16em] text-olive-700 hover:text-clay-600 transition-colors"

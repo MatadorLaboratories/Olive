@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LogOut, Sparkles, User2 } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { signOut } from "@/services/auth";
 import type { UserRole } from "@/types/domain";
 
 export type HeaderUser = {
@@ -131,7 +130,7 @@ export function AccountMenu({ user }: { user: HeaderUser }) {
               </li>
             )}
             <li className="border-t border-[color:var(--border-hairline)]">
-              <form action={signOut}>
+              <form method="post" action="/api/auth/sign-out">
                 <button
                   type="submit"
                   className="w-full flex items-center justify-between gap-3 px-5 py-3.5 text-[12px] uppercase tracking-[0.16em] text-olive-700 hover:bg-cream-50 hover:text-clay-600 transition-colors"
@@ -200,7 +199,7 @@ export function AccountMenuMobile({ user }: { user: HeaderUser }) {
           </li>
         )}
         <li>
-          <form action={signOut}>
+          <form method="post" action="/api/auth/sign-out">
             <button
               type="submit"
               className="w-full flex items-center justify-between px-5 py-4 text-[12px] uppercase tracking-[0.16em] text-olive-700 hover:bg-cream-50 hover:text-clay-600 transition-colors"
