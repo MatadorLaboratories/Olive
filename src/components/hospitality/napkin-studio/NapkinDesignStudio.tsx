@@ -75,6 +75,27 @@ function forwardableStudio() {
     const [uploading, startUpload] = useTransition();
     const [uploadError, setUploadError] = useState<string | null>(null);
 
+    // Responsive canvas — measure the middle column and pass the available
+    // width to Konva. Default to 680 (the design grid resolution) but
+    // shrink if the column is narrower so the Stage never overflows or
+    // pushes the right inspector below.
+    const middleRef = useRef<HTMLDivElement>(null);
+    const [canvasWidth, setCanvasWidth] = useState<number>(680);
+    useEffect(() => {
+      const el = middleRef.current;
+      if (!el) return;
+      const measure = () => {
+        // Subtract the card's interior padding (p-6 = 24px each side).
+        const inner = el.clientWidth - 48;
+        const next = Math.max(320, Math.min(720, inner));
+        setCanvasWidth(next);
+      };
+      measure();
+      const ro = new ResizeObserver(measure);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
+
     // Inject Google Fonts for the studio's curated ramp. Only the families
     // we expose to the customer are loaded — keeps the page light.
     useEffect(() => {
@@ -182,9 +203,9 @@ function forwardableStudio() {
     };
 
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_280px] gap-6">
         {/* Left side panel — base settings */}
-        <aside className="lg:col-span-3 space-y-5">
+        <aside className="space-y-5 lg:order-1 order-2">
           <div className="card p-5">
             <p className="eyebrow text-clay-500 mb-3">Napkin · base</p>
             <ColourSection
@@ -295,26 +316,26 @@ function forwardableStudio() {
         </aside>
 
         {/* Canvas — middle */}
-        <div className="lg:col-span-6">
+        <div ref={middleRef} className="lg:order-2 order-1 min-w-0">
           <div className="card p-6 grid place-items-center bg-[color:var(--color-linen)]">
-            <div className="w-full max-w-[680px]">
+            <div className="w-full" style={{ maxWidth: canvasWidth }}>
               <NapkinCanvas
                 ref={canvasRef}
                 design={design}
                 selectedId={selectedId}
                 onSelect={setSelectedId}
                 onChangeElement={updateElement}
-                displayWidth={680}
+                displayWidth={canvasWidth}
               />
             </div>
-            <p className="mt-4 text-[11px] uppercase tracking-[0.14em] text-olive-500">
+            <p className="mt-4 text-[11px] uppercase tracking-[0.14em] text-olive-500 text-center">
               Click anywhere outside an element to deselect · drag corners to resize
             </p>
           </div>
         </div>
 
         {/* Right side panel — selected element controls */}
-        <aside className="lg:col-span-3">
+        <aside className="lg:order-3 order-3">
           {selected ? (
             <ElementInspector
               element={selected}

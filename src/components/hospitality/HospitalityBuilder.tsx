@@ -95,34 +95,35 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
     return null;
   }, [tier, qty]);
 
-  // Sync design base from the structural pickers in step 2 — once the
-  // customer enters the studio they can override, but a sensible default
-  // beats a blank canvas.
+  // Keep design.base.fabric in sync with the wizard's fabric pick so the
+  // canvas reads consistent metadata even though the customer picks edge
+  // and colour visually inside the studio (single source of truth for
+  // those is `draft.design.base`).
   useEffect(() => {
-    const colour = options.colours.find((c) => c.id === draft.colour);
-    const edge = options.edges.find((e) => e.id === draft.edgeStyle)?.id ?? draft.design.base.edge;
-    if (!colour) return;
-    setDraft((d) => ({
-      ...d,
-      design: {
-        ...d.design,
-        base: {
-          ...d.design.base,
-          fabric: d.fabric || d.design.base.fabric,
-          edge,
-          fillColor: colour.hex,
-        },
-      },
-    }));
-  }, [draft.colour, draft.edgeStyle, draft.fabric, options.colours, options.edges]);
+    if (!draft.fabric) return;
+    setDraft((d) =>
+      d.design.base.fabric === d.fabric
+        ? d
+        : {
+            ...d,
+            design: {
+              ...d.design,
+              base: { ...d.design.base, fabric: d.fabric },
+            },
+          },
+    );
+  }, [draft.fabric]);
 
   // Canvas ref — used at submit-time to flatten the design to PNG.
   const canvasRef = useRef<NapkinCanvasHandle | null>(null);
 
   // ----- step gating -----
+  // Step 2 only requires fabric now — edge style and colour are picked
+  // visually in the design studio (step 4) and derived from design.base
+  // at submit time.
   const canAdvance: Record<Step, boolean> = {
     1: !!draft.customerType,
-    2: !!draft.fabric && !!draft.edgeStyle && !!draft.colour,
+    2: !!draft.fabric,
     3: !!draft.quantityTier,
     4: true, // design is optional — empty canvas is fine
     5: !!draft.contactName && /\S+@\S+\.\S+/.test(draft.contactEmail),
@@ -140,6 +141,17 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
       designPreviewDataUrl = canvasRef.current?.getSnapshotDataUrl() ?? null;
     }
 
+    // Derive the structural edge + colour from design.base. The studio is
+    // the only place these are set now, so we read them at submit time.
+    // For colour: prefer a swatch id when the hex matches; fall back to
+    // the hex string itself so custom freeform colours still flow through
+    // to the order record.
+    const derivedEdge = draft.design.base.edge || "plain";
+    const matchedSwatch = options.colours.find(
+      (c) => c.hex.toLowerCase() === draft.design.base.fillColor.toLowerCase(),
+    );
+    const derivedColour = matchedSwatch?.id ?? draft.design.base.fillColor;
+
     const payload: CustomOrderInput = {
       customerType: draft.customerType,
       businessName: draft.businessName || null,
@@ -147,8 +159,8 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
       contactEmail: draft.contactEmail,
       contactPhone: draft.contactPhone || null,
       fabric: draft.fabric,
-      edgeStyle: draft.edgeStyle,
-      colour: draft.colour,
+      edgeStyle: derivedEdge,
+      colour: derivedColour,
       quantityTier: draft.quantityTier,
       quantity: qty > 0 ? qty : null,
       preferredDeadline: draft.preferredDeadline || null,
@@ -188,8 +200,14 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
     const buildSummary = [
       { label: "Customer", value: labelFor(options.customerTypes, draft.customerType) },
       { label: "Fabric", value: labelFor(options.fabrics, draft.fabric) },
-      { label: "Edge", value: labelFor(options.edges, draft.edgeStyle) },
-      { label: "Colour", value: labelFor(options.colours, draft.colour) },
+      { label: "Edge", value: labelFor(options.edges, draft.design.base.edge) },
+      {
+        label: "Colour",
+        value:
+          options.colours.find(
+            (c) => c.hex.toLowerCase() === draft.design.base.fillColor.toLowerCase(),
+          )?.label ?? draft.design.base.fillColor,
+      },
       { label: "Tier", value: labelFor(options.quantityTiers, draft.quantityTier) },
     ];
     if (qty > 0) buildSummary.push({ label: "Quantity", value: `${qty} pcs` });
@@ -232,42 +250,15 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
             )}
 
             {step === 2 && (
-              <StepShell title="Choose fabric, edge & colour" stepLabel="Step 02 / Fabric">
-                <SectionLabel>Fabric</SectionLabel>
+              <StepShell title="Choose your fabric" stepLabel="Step 02 / Fabric">
+                <p className="text-olive-700/85 leading-relaxed text-[15px] max-w-2xl mb-6">
+                  Your fabric drives the feel of the napkin and the pricing.
+                  Edge style and colour are part of the design step — you'll
+                  pick those on the canvas in the next step.
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {options.fabrics.map((f) => (
                     <Pickable key={f.id} label={f.label} selected={draft.fabric === f.id} onClick={() => set("fabric", f.id)} />
-                  ))}
-                </div>
-
-                <SectionLabel>Edge</SectionLabel>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {options.edges.map((e) => (
-                    <Pickable key={e.id} label={e.label} selected={draft.edgeStyle === e.id} onClick={() => set("edgeStyle", e.id)} />
-                  ))}
-                </div>
-
-                <SectionLabel>Colour</SectionLabel>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {options.colours.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => set("colour", c.id)}
-                      className={cn(
-                        "group flex flex-col items-start gap-3 rounded-md border p-4 transition-all text-left",
-                        draft.colour === c.id
-                          ? "border-olive-900 bg-cream-50"
-                          : "border-[color:var(--color-rule)] hover:border-olive-700",
-                      )}
-                    >
-                      <span
-                        aria-hidden
-                        className="block h-12 w-12 rounded-full ring-1 ring-[color:var(--color-rule)]"
-                        style={{ background: c.hex }}
-                      />
-                      <span className="text-[12px] uppercase tracking-[0.12em] text-olive-800">{c.label}</span>
-                    </button>
                   ))}
                 </div>
               </StepShell>
@@ -419,8 +410,17 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
                 <ul className="mt-8 space-y-3 text-olive-800">
                   <ReviewLine label="Customer" value={labelFor(options.customerTypes, draft.customerType)} />
                   <ReviewLine label="Fabric" value={labelFor(options.fabrics, draft.fabric)} />
-                  <ReviewLine label="Edge" value={labelFor(options.edges, draft.edgeStyle)} />
-                  <ReviewLine label="Colour" value={labelFor(options.colours, draft.colour)} />
+                  <ReviewLine label="Edge" value={labelFor(options.edges, draft.design.base.edge)} />
+                  <ReviewLine
+                    label="Colour"
+                    value={
+                      options.colours.find(
+                        (c) =>
+                          c.hex.toLowerCase() ===
+                          draft.design.base.fillColor.toLowerCase(),
+                      )?.label ?? draft.design.base.fillColor
+                    }
+                  />
                   <ReviewLine label="Quantity tier" value={labelFor(options.quantityTiers, draft.quantityTier)} />
                   {qty > 0 && <ReviewLine label="Quantity" value={String(qty)} />}
                   <ReviewLine label="Contact" value={`${draft.contactName} — ${draft.contactEmail}`} />
@@ -474,8 +474,18 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
               <dl className="space-y-3 text-sm">
                 <SummaryLine label="Customer" value={labelFor(options.customerTypes, draft.customerType)} />
                 <SummaryLine label="Fabric" value={labelFor(options.fabrics, draft.fabric)} />
-                <SummaryLine label="Edge" value={labelFor(options.edges, draft.edgeStyle)} />
-                <SummaryLine label="Colour" value={labelFor(options.colours, draft.colour)} colourHex={options.colours.find((c) => c.id === draft.colour)?.hex} />
+                <SummaryLine label="Edge" value={labelFor(options.edges, draft.design.base.edge)} />
+                <SummaryLine
+                  label="Colour"
+                  value={
+                    options.colours.find(
+                      (c) =>
+                        c.hex.toLowerCase() ===
+                        draft.design.base.fillColor.toLowerCase(),
+                    )?.label ?? draft.design.base.fillColor
+                  }
+                  colourHex={draft.design.base.fillColor}
+                />
                 <SummaryLine label="Tier" value={labelFor(options.quantityTiers, draft.quantityTier)} />
                 {qty > 0 && <SummaryLine label="Quantity" value={String(qty)} />}
               </dl>
