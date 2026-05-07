@@ -1,14 +1,18 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Loader2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { formatMoney } from "@/lib/format";
 import { submitCustomOrder, type CustomOrderInput } from "@/services/enquiries";
 import { uploadCustomBrandFile } from "@/services/custom-uploads";
+import { uploadNapkinPreview } from "@/services/napkin-studio-uploads";
 import type { ComputedQuote } from "@/services/custom-order-pricing";
+import { defaultDesign, type NapkinDesign } from "@/services/napkin-design";
 import { QuoteOutcome } from "./QuoteOutcome";
+import { NapkinDesignStudio } from "./napkin-studio/NapkinDesignStudio";
+import type { NapkinCanvasHandle } from "./napkin-studio/NapkinCanvas";
 
 export type BuilderOptions = {
   fabrics: { id: string; label: string }[];
@@ -18,7 +22,9 @@ export type BuilderOptions = {
   customerTypes: { id: string; label: string }[];
 };
 
-type Step = 1 | 2 | 3 | 4 | 5;
+type Step = 1 | 2 | 3 | 4 | 5 | 6;
+const STEP_COUNT = 6;
+const DESIGN_STEP = 4;
 
 type Draft = {
   customerType: string;
@@ -36,6 +42,8 @@ type Draft = {
   paymentSetting: "quote_only" | "deposit" | "full_payment";
   logoUrl: string | null;
   inspirationUrls: string[];
+  /** Live design state for the napkin studio. */
+  design: NapkinDesign;
 };
 
 const empty: Draft = {
@@ -54,6 +62,7 @@ const empty: Draft = {
   paymentSetting: "quote_only",
   logoUrl: null,
   inspirationUrls: [],
+  design: defaultDesign(),
 };
 
 export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
@@ -86,20 +95,51 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
     return null;
   }, [tier, qty]);
 
+  // Sync design base from the structural pickers in step 2 — once the
+  // customer enters the studio they can override, but a sensible default
+  // beats a blank canvas.
+  useEffect(() => {
+    const colour = options.colours.find((c) => c.id === draft.colour);
+    const edge = options.edges.find((e) => e.id === draft.edgeStyle)?.id ?? draft.design.base.edge;
+    if (!colour) return;
+    setDraft((d) => ({
+      ...d,
+      design: {
+        ...d.design,
+        base: {
+          ...d.design.base,
+          fabric: d.fabric || d.design.base.fabric,
+          edge,
+          fillColor: colour.hex,
+        },
+      },
+    }));
+  }, [draft.colour, draft.edgeStyle, draft.fabric, options.colours, options.edges]);
+
+  // Canvas ref — used at submit-time to flatten the design to PNG.
+  const canvasRef = useRef<NapkinCanvasHandle | null>(null);
+
   // ----- step gating -----
   const canAdvance: Record<Step, boolean> = {
     1: !!draft.customerType,
     2: !!draft.fabric && !!draft.edgeStyle && !!draft.colour,
     3: !!draft.quantityTier,
-    4: !!draft.contactName && /\S+@\S+\.\S+/.test(draft.contactEmail),
-    5: true,
+    4: true, // design is optional — empty canvas is fine
+    5: !!draft.contactName && /\S+@\S+\.\S+/.test(draft.contactEmail),
+    6: true,
   };
 
-  const next = () => setStep((s) => (Math.min(5, s + 1) as Step));
+  const next = () => setStep((s) => (Math.min(STEP_COUNT, s + 1) as Step));
   const back = () => setStep((s) => (Math.max(1, s - 1) as Step));
 
   const submit = () => {
     setSubmitError(null);
+    // Capture a flattened PNG of the napkin design (server will upload it).
+    let designPreviewDataUrl: string | null = null;
+    if (draft.design.elements.length > 0) {
+      designPreviewDataUrl = canvasRef.current?.getSnapshotDataUrl() ?? null;
+    }
+
     const payload: CustomOrderInput = {
       customerType: draft.customerType,
       businessName: draft.businessName || null,
@@ -116,7 +156,9 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
       paymentSetting: draft.paymentSetting,
       logoUrl: draft.logoUrl,
       inspirationUrls: draft.inspirationUrls,
+      design: draft.design,
     };
+
     startTransition(async () => {
       const result = await submitCustomOrder(payload);
       if (!result.ok) {
@@ -125,6 +167,19 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
         return;
       }
       if (!result.data) return;
+
+      // Best-effort: upload the design preview snapshot to Supabase
+      // Storage and link it to the new order. Failure is non-fatal.
+      if (designPreviewDataUrl && result.data.reference) {
+        try {
+          await uploadNapkinPreview({
+            reference: result.data.reference,
+            dataUrl: designPreviewDataUrl,
+          });
+        } catch (e) {
+          console.warn("[hospitality] preview upload failed", e);
+        }
+      }
       setSubmitted(result.data);
     });
   };
@@ -157,8 +212,8 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
     <section className="bg-canvas pb-32">
       <div className="shell">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Step body */}
-          <div className="lg:col-span-8">
+          {/* Step body — full width on the design step so the canvas has room. */}
+          <div className={cn(step === DESIGN_STEP ? "lg:col-span-12" : "lg:col-span-8")}>
             <Stepper step={step} />
 
             {step === 1 && (
@@ -267,7 +322,24 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
             )}
 
             {step === 4 && (
-              <StepShell title="Your details" stepLabel="Step 04 / Contact">
+              <StepShell title="Design your napkin" stepLabel="Step 04 / Design">
+                <p className="text-olive-700/85 leading-relaxed text-[15px] max-w-2xl mb-6">
+                  Drag, drop, type, scale. Drop a logo or build something with text and the
+                  studio's curated fonts. Skip if you'd rather discuss it on the call —
+                  the design is optional.
+                </p>
+                <NapkinDesignStudio
+                  design={draft.design}
+                  onChange={(d) => setDraft((cur) => ({ ...cur, design: d }))}
+                  options={options}
+                  sessionToken={sessionToken.current}
+                  canvasRef={canvasRef}
+                />
+              </StepShell>
+            )}
+
+            {step === 5 && (
+              <StepShell title="Your details" stepLabel="Step 05 / Contact">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Your name" required value={draft.contactName} onChange={(v) => set("contactName", v)} error={errors.contactName} />
                   <Field label="Business name" value={draft.businessName} onChange={(v) => set("businessName", v)} />
@@ -338,8 +410,8 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
               </StepShell>
             )}
 
-            {step === 5 && (
-              <StepShell title="Send it" stepLabel="Step 05 / Review">
+            {step === 6 && (
+              <StepShell title="Send it" stepLabel="Step 06 / Review">
                 <p className="text-olive-800/85 leading-relaxed text-lg max-w-xl">
                   We'll come back to you within one business day. Most custom orders quote inside three days.
                 </p>
@@ -370,7 +442,7 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
                   Back
                 </button>
               )}
-              {step < 5 ? (
+              {step < STEP_COUNT ? (
                 <button
                   type="button"
                   onClick={next}
@@ -394,7 +466,8 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
             </div>
           </div>
 
-          {/* Live summary card — sticky on desktop */}
+          {/* Live summary card — hidden on the design step so the canvas owns the row. */}
+          {step !== DESIGN_STEP && (
           <aside className="lg:col-span-4 lg:sticky lg:top-32 self-start">
             <div className="card p-7">
               <p className="eyebrow text-clay-500 mb-4">Your custom napkin</p>
@@ -423,6 +496,7 @@ export function HospitalityBuilder({ options }: { options: BuilderOptions }) {
               </Link>
             </div>
           </aside>
+          )}
         </div>
       </div>
     </section>
@@ -437,7 +511,7 @@ function labelFor<T extends { id: string; label: string }>(opts: T[], id: string
 function Stepper({ step }: { step: Step }) {
   return (
     <ol className="flex items-center gap-2 mb-10 text-[11px] uppercase tracking-[0.14em]">
-      {[1, 2, 3, 4, 5].map((n) => (
+      {[1, 2, 3, 4, 5, 6].map((n) => (
         <li key={n} className="flex items-center gap-2">
           <span
             className={cn(
@@ -449,7 +523,7 @@ function Stepper({ step }: { step: Step }) {
           >
             <span className="font-display italic tabular">0{n}</span>
           </span>
-          {n < 5 && <span className="block w-3 h-px bg-[color:var(--color-rule)]" />}
+          {n < 6 && <span className="block w-3 h-px bg-[color:var(--color-rule)]" />}
         </li>
       ))}
     </ol>

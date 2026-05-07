@@ -91,5 +91,7 @@ const demoOrdersForCurrentUser: CustomOrder[] = [
     paymentSetting: "deposit",
     createdAt: "2026-04-25T09:00:00Z",
     updatedAt: "2026-04-29T15:30:00Z",
+    designJson: null,
+    designPreviewUrl: null,
   },
 ];

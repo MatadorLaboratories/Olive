@@ -47,6 +47,8 @@ const customOrderSchema = z.object({
   paymentSetting: z.enum(["quote_only", "deposit", "full_payment"]).optional().default("quote_only"),
   logoUrl: z.string().optional().nullable(),
   inspirationUrls: z.array(z.string()).optional().default([]),
+  /** Structured design state from the napkin studio (jsonb). */
+  design: z.unknown().optional().nullable(),
 });
 
 export type EnquiryInput = z.infer<typeof enquirySchema>;
@@ -203,6 +205,9 @@ export async function submitCustomOrder(
         logo_url: data.logoUrl,
         inspiration_urls: data.inspirationUrls,
         quote_total_cents: quote.ok ? quote.totalCents : null,
+        // Structured napkin design state from the studio. Optional —
+        // customers can submit without entering the design step.
+        design_json: data.design ?? null,
       });
       if (error) {
         console.error("[customOrder.submit] insert failed", error);

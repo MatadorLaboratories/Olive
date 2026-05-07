@@ -96,6 +96,8 @@ export function rowToCustomOrder(row: Record<string, unknown>): CustomOrder {
       (row.payment_setting as CustomOrder["paymentSetting"]) ?? null,
     createdAt: String(row.created_at ?? ""),
     updatedAt: String(row.updated_at ?? row.created_at ?? ""),
+    designJson: (row.design_json as unknown) ?? null,
+    designPreviewUrl: (row.design_preview_url as string | null) ?? null,
   };
 }
 
@@ -155,6 +157,8 @@ const seedCustomOrders: CustomOrder[] = [
     paymentSetting: "deposit",
     createdAt: "2026-04-26T10:00:00Z",
     updatedAt: "2026-04-26T10:00:00Z",
+    designJson: null,
+    designPreviewUrl: null,
   },
   {
     id: "co2",
@@ -183,5 +187,7 @@ const seedCustomOrders: CustomOrder[] = [
     paymentSetting: "deposit",
     createdAt: "2026-03-18T14:00:00Z",
     updatedAt: "2026-03-22T08:30:00Z",
+    designJson: null,
+    designPreviewUrl: null,
   },
 ];

@@ -183,6 +183,11 @@ export interface CustomOrder {
   paymentSetting: "quote_only" | "deposit" | "full_payment" | null;
   createdAt: string;
   updatedAt: string;
+  /** Structured napkin-studio design state. Opaque jsonb — typed as
+   *  NapkinDesign in `services/napkin-design.ts`. */
+  designJson: unknown;
+  /** Public URL of the flattened design snapshot (PNG). */
+  designPreviewUrl: string | null;
 }
 
 // ---------- Misc ----------

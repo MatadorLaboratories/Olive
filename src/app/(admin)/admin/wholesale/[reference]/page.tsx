@@ -166,6 +166,48 @@ export default async function AdminCustomOrderDetail({
             )}
           </section>
 
+          {(order.designPreviewUrl || !!order.designJson) && (
+            <section className="card p-7 space-y-4">
+              <div className="flex items-baseline justify-between">
+                <p className="eyebrow text-clay-500">Customer's napkin design</p>
+                <span className="text-[11px] uppercase tracking-[0.14em] text-olive-500">
+                  Konva studio
+                </span>
+              </div>
+              {order.designPreviewUrl && (
+                <a
+                  href={order.designPreviewUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block aspect-square rounded-md border border-[color:var(--border-base)] overflow-hidden bg-[color:var(--color-linen)]"
+                >
+                  <Image
+                    src={order.designPreviewUrl}
+                    alt="Napkin design preview"
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-contain"
+                    unoptimized
+                  />
+                </a>
+              )}
+              {order.designJson ? (
+                <details className="text-[12px] leading-relaxed">
+                  <summary className="eyebrow text-olive-600 cursor-pointer">
+                    Structured design data
+                  </summary>
+                  <pre className="mt-3 overflow-auto rounded-md bg-cream-50 p-3 max-h-72 text-[11px] tabular text-olive-800">
+                    {JSON.stringify(order.designJson, null, 2)}
+                  </pre>
+                </details>
+              ) : (
+                <p className="text-[12px] italic text-olive-600">
+                  Design preview saved without structured data.
+                </p>
+              )}
+            </section>
+          )}
+
           {(order.logoUrl || order.inspirationUrls.length > 0) && (
             <section className="card p-7 space-y-4">
               <div className="flex items-baseline justify-between">
