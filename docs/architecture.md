@@ -100,4 +100,4 @@ The 30-day lock toggles `cutoff_locked = true` once `event_date - now() <= 30d`.
 
 - **Netlify** with the Next.js Runtime (auto-detected). `.netlify.toml` ships baseline security headers.
 - **Edge runtime**: not used for v1 (Supabase admin client requires Node).
-- **Image domains**: `*.supabase.co`, `images.unsplash.com` (placeholders), `cdn.olivelinen.co.nz` (future).
+- **Image domains**: `*.supabase.co` (all live imagery — `public-media/brand/...` and `public-media/products/...`), `cdn.olivelinen.co.nz` (future). Unsplash placeholders were removed in the May 2026 photography pass; see `docs/product-photography-mapping.md`.

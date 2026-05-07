@@ -4,14 +4,19 @@ import Image from "next/image";
 /**
  * Three pathways — events / retail / hospitality. Type-led tiles with
  * one strong image each. Lighter on garnish than the previous version.
+ *
+ * Imagery sourced from `public-media/brand/...` in Supabase Storage —
+ * studio shots, no stock.
  */
+const BRAND =
+  "https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand";
+
 const services = [
   {
     label: "Events",
     title: "Hire linen",
     body: "For weddings, private events and the dinners that go on too long. Pick dates first, then we'll show you what's available.",
-    image:
-      "https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=1100&q=85",
+    image: `${BRAND}/3d807f23-bc86-423b-b3b0-769a692df007.jpeg`,
     href: "/hire" as const,
     cta: "Start a hire",
   },
@@ -19,8 +24,7 @@ const services = [
     label: "Retail",
     title: "Shop linen",
     body: "Take a piece of the studio home. Sets of scallop napkins, runners, candles and post-wedding gifts.",
-    image:
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1100&q=85",
+    image: `${BRAND}/14e14fca-527c-4f98-9abd-7b3b30a2f48c.jpeg`,
     href: "/shop" as const,
     cta: "Browse the shop",
   },
@@ -28,8 +32,7 @@ const services = [
     label: "Hospitality",
     title: "Custom napkins",
     body: "Branded linen for restaurants, bars, venues and brands. Logo, edge, fabric, colour — tiers from forty to five thousand.",
-    image:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1100&q=85",
+    image: `${BRAND}/247b74ea-a9f0-4367-9304-b2f2ee7a93f8.jpeg`,
     href: "/hospitality" as const,
     cta: "Build a quote",
   },

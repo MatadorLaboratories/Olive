@@ -56,7 +56,7 @@ export default async function ProductDetailPage({
             {/* Imagery — sticky on desktop */}
             <div className="lg:col-span-7">
               <div className="frame aspect-[4/5] relative">
-                {product.heroImageUrl && (
+                {product.heroImageUrl ? (
                   <Image
                     src={product.heroImageUrl}
                     alt={`${product.name} in ${product.colour ?? ""}`}
@@ -65,6 +65,15 @@ export default async function ProductDetailPage({
                     sizes="(min-width: 1024px) 60vw, 100vw"
                     className="object-cover"
                   />
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center bg-cream-200 text-olive-500 font-display italic text-2xl px-8 text-center">
+                    {product.name}
+                    {product.colour && (
+                      <span className="block text-base mt-2 not-italic tracking-[0.18em] uppercase text-olive-400">
+                        {product.colour}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
               {product.galleryUrls.length > 0 && (

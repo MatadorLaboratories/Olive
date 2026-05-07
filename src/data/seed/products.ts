@@ -8,7 +8,16 @@ import type { Product } from "@/types/domain";
  * rows take over without code changes.
  *
  * Each entry mirrors the `products` table column shape (camelCased).
+ *
+ * Imagery: real product photography lives at `public-media/products/{slug}/...`
+ * in Supabase Storage (uploaded May 2026). Products without a confident
+ * match in that shoot keep `heroImageUrl: null` and degrade to a neutral
+ * placeholder in the UI — never stock photos. See
+ * `docs/product-photography-mapping.md`.
  */
+const PRODUCT_MEDIA =
+  "https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/products";
+
 export const seedProducts: Product[] = [
   {
     id: "p_scallop_napkin_bone",
@@ -23,12 +32,8 @@ export const seedProducts: Product[] = [
     description:
       "The original Olive scallop. Hand-finished scallop edge, washed soft, in a warm bone tone that quietly disappears into a wedding palette without ever being beige. Sold and hired in sets of ten.",
     shortDescription: "Hand-scalloped 100% French linen — the original Olive napkin.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=1400&q=80",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
-    ],
+    heroImageUrl: null,
+    galleryUrls: [],
     hirePriceCents: 350,
     retailPriceCents: 1800,
     replacementCostCents: 4200,
@@ -47,11 +52,8 @@ export const seedProducts: Product[] = [
     description:
       "The scallop in clay — warm terracotta with the slightest pink. Reads softer than terracotta in candlelight, holds presence on a long table.",
     shortDescription: "Warm-terracotta scallop — softens beautifully in candlelight.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1400&q=80",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=1400&q=80",
-    ],
+    heroImageUrl: null,
+    galleryUrls: [],
     hirePriceCents: 350,
     retailPriceCents: 1800,
     replacementCostCents: 4200,
@@ -70,9 +72,10 @@ export const seedProducts: Product[] = [
     description:
       "Deep dusted olive — a quietly moody scallop for autumn weddings, hospitality launches and the kind of dinner that ends well past midnight.",
     shortDescription: "The house olive. Quiet, moody, surprisingly versatile.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1400&q=80",
-    galleryUrls: [],
+    heroImageUrl: `${PRODUCT_MEDIA}/scallop-napkin-olive/hero-1778153501229-1E9A2259_Sml.jpg`,
+    galleryUrls: [
+      `${PRODUCT_MEDIA}/scallop-napkin-olive/gallery-1-1778153502587-1E9A2379_Sml.jpg`,
+    ],
     hirePriceCents: 350,
     retailPriceCents: 1800,
     replacementCostCents: 4200,
@@ -91,9 +94,11 @@ export const seedProducts: Product[] = [
     description:
       "The everyday napkin made beautiful. Heavyweight stonewashed linen with a clean mitred edge — meant for dinners that don't need to perform.",
     shortDescription: "The everyday napkin, in stonewashed oat.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
-    galleryUrls: [],
+    heroImageUrl: `${PRODUCT_MEDIA}/plain-napkin-oat/hero-1778153493327-Product_Shots42676_Web.jpg`,
+    galleryUrls: [
+      `${PRODUCT_MEDIA}/plain-napkin-oat/gallery-1-1778153496243-Product_Shots42698_Web.jpg`,
+      `${PRODUCT_MEDIA}/plain-napkin-oat/gallery-2-1778153498914-1E9A2244_Sml.jpg`,
+    ],
     hirePriceCents: 250,
     retailPriceCents: null,
     replacementCostCents: 3200,
@@ -112,9 +117,10 @@ export const seedProducts: Product[] = [
     description:
       "Our flagship long tablecloth, sized for ten-to-twelve guests. Soft drape, generous overhang, hand-finished hem.",
     shortDescription: "Long-table cream linen — soft drape, hand-finished hem.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
-    galleryUrls: [],
+    heroImageUrl: `${PRODUCT_MEDIA}/long-tablecloth-cream/hero-1778153504106-1E9A2351_Sml.jpg`,
+    galleryUrls: [
+      `${PRODUCT_MEDIA}/long-tablecloth-cream/gallery-1-1778153505359-1E9A2367_Sml.jpg`,
+    ],
     hirePriceCents: 4500,
     retailPriceCents: null,
     replacementCostCents: 24000,
@@ -133,8 +139,7 @@ export const seedProducts: Product[] = [
     description:
       "Sage-toned linen tablecloth with the same generous drape and finish as the cream. Disappears beautifully into a green-tone wedding palette.",
     shortDescription: "Long tablecloth in dusty sage.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1400&q=80",
+    heroImageUrl: `${PRODUCT_MEDIA}/long-tablecloth-sage/hero-1778153506702-1E9A2368_Sml.jpg`,
     galleryUrls: [],
     hirePriceCents: 4500,
     retailPriceCents: null,
@@ -154,8 +159,7 @@ export const seedProducts: Product[] = [
     description:
       "A long olive runner with frayed selvedge — laid down the centre of a long table, draped over a sweetheart, or used to soften an otherwise hard surface.",
     shortDescription: "Frayed-edge olive runner — long, soft, deeply useful.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
+    heroImageUrl: null,
     galleryUrls: [],
     hirePriceCents: 1800,
     retailPriceCents: 9800,
@@ -175,8 +179,7 @@ export const seedProducts: Product[] = [
     description:
       "Clay-toned long runner — warm, lived-in, ages beautifully. Pairs with bone scallop napkins for an autumnal wedding palette.",
     shortDescription: "Long clay runner — warm and lived-in.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
+    heroImageUrl: null,
     galleryUrls: [],
     hirePriceCents: 1800,
     retailPriceCents: 9800,
@@ -196,8 +199,7 @@ export const seedProducts: Product[] = [
     description:
       "A post-wedding gift set. Six hand-scalloped napkins in our three house colours, packed in a linen-wrapped box with care notes.",
     shortDescription: "Six house scallop napkins, linen-wrapped.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1400&q=80",
+    heroImageUrl: null,
     galleryUrls: [],
     hirePriceCents: null,
     retailPriceCents: 12800,
@@ -217,8 +219,7 @@ export const seedProducts: Product[] = [
     description:
       "Our house candle, made for the studio. A green, slightly herbal nose — olive leaf, salt, vetiver — with the kind of throw that fills a room without hijacking dinner.",
     shortDescription: "House candle. Olive leaf, salt, vetiver.",
-    heroImageUrl:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
+    heroImageUrl: null,
     galleryUrls: [],
     hirePriceCents: null,
     retailPriceCents: 5800,

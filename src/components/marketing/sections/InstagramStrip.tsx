@@ -4,13 +4,18 @@ import { Instagram } from "lucide-react";
 import { site } from "@/config/site";
 import { getInstagramFeed } from "@/services/instagram";
 
+// Studio fallback when the live IG feed isn't connected — shots from
+// `public-media/brand/...`, no stock imagery.
+const BRAND =
+  "https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand";
+
 const fallbackThumbs = [
-  "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1579389083395-4507e98b5e67?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=700&q=80",
+  `${BRAND}/3d807f23-bc86-423b-b3b0-769a692df007.jpeg`,
+  `${BRAND}/5526beb0-a812-42f8-994d-b4cfcc2b35e6.jpeg`,
+  `${BRAND}/fee6686f-979f-41ce-95d0-faa1ba29ec56.jpeg`,
+  `${BRAND}/145e224f-c717-40b5-aab4-6efcdc3e522f.jpeg`,
+  `${BRAND}/14e14fca-527c-4f98-9abd-7b3b30a2f48c.jpeg`,
+  `${BRAND}/fc0b9e5a-3948-437a-9635-3b2df10a94a8.jpeg`,
 ];
 
 export async function InstagramStrip() {

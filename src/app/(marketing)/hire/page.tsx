@@ -76,7 +76,7 @@ export default function HirePage() {
           <div className="lg:col-span-5">
             <div className="frame aspect-[4/5]">
               <Image
-                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1000&q=80"
+                src="https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand/d0144340-85fe-4641-8cfb-7329e82d5ebf.jpeg"
                 alt="Linen-dressed wedding table"
                 fill
                 priority

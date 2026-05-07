@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
+      // All marketing + product imagery is hosted in Supabase Storage
+      // (`public-media` bucket). Unsplash was removed in May 2026 with
+      // the real product photography pass — see
+      // `docs/product-photography-mapping.md`.
       { protocol: "https", hostname: "*.supabase.co" },
       { protocol: "https", hostname: "cdn.olivelinen.co.nz" },
     ],
