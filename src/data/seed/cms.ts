@@ -2,7 +2,15 @@
  * Seed CMS blocks — keyed copy that admin can edit later in /admin/cms.
  * Pages call `getCmsBlock(key)` from the cms service; it returns the
  * Supabase row when the DB is connected, otherwise this seed.
+ *
+ * Brand image URLs point at `public-media/brand/...` in Supabase Storage —
+ * uploaded once via the import pass, then referenced from both this seed
+ * (demo / cold-start) and the live `cms_blocks` rows (production). Mirror
+ * any changes made in the admin CMS back here so demo mode keeps parity.
  */
+
+const BRAND =
+  "https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand";
 
 export type CmsBlock<T = unknown> = {
   key: string;
@@ -19,9 +27,8 @@ export const seedCms = {
     secondaryCta: { label: "See real weddings", href: "/portfolio" },
     tagline: "Like the olive to your martini",
     images: {
-      primary:
-        "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1800&q=85",
-      caption: "Eames & Co. — Glenorchy, March 2024",
+      primary: `${BRAND}/fc0b9e5a-3948-437a-9635-3b2df10a94a8.jpeg`,
+      caption: "Pillar candles & linen drape — Wakatipu, March 2026",
     },
   },
 
@@ -46,8 +53,8 @@ export const seedCms = {
       attribution: "Vogue Living, Spring '24",
     },
     images: [
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80",
+      `${BRAND}/145e224f-c717-40b5-aab4-6efcdc3e522f.jpeg`,
+      `${BRAND}/8aec86d3-87e7-4db9-8af6-eea5e74f052e.jpeg`,
     ],
   },
 
@@ -63,8 +70,7 @@ export const seedCms = {
       { title: "Made for", body: "Weddings, private events, hospitality venues, brands who care about the table." },
       { title: "Where", body: "Queenstown, New Zealand — delivering through Central Otago and the South Island." },
     ],
-    coverImage:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80",
+    coverImage: `${BRAND}/247b74ea-a9f0-4367-9304-b2f2ee7a93f8.jpeg`,
   },
 
   "hospitality.options": {

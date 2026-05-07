@@ -1,5 +1,22 @@
 import type { PortfolioItem } from "@/types/domain";
 
+const SUPABASE_BRAND_BASE =
+  "https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand";
+
+const photo = {
+  archBow:        `${SUPABASE_BRAND_BASE}/3d807f23-bc86-423b-b3b0-769a692df007.jpeg`,
+  redRoses:       `${SUPABASE_BRAND_BASE}/5526beb0-a812-42f8-994d-b4cfcc2b35e6.jpeg`,
+  greenDinner:    `${SUPABASE_BRAND_BASE}/fee6686f-979f-41ce-95d0-faa1ba29ec56.jpeg`,
+  banquetAerial:  `${SUPABASE_BRAND_BASE}/8626c671-a16d-4c18-a48b-2436d3ab89f4.jpeg`,
+  gardenMarquee:  `${SUPABASE_BRAND_BASE}/d0144340-85fe-4641-8cfb-7329e82d5ebf.jpeg`,
+  yellowScallop:  `${SUPABASE_BRAND_BASE}/14e14fca-527c-4f98-9abd-7b3b30a2f48c.jpeg`,
+  lakeNapkin:     `${SUPABASE_BRAND_BASE}/7768be5e-050e-4559-aa86-82ff65575b64.jpeg`,
+  chandelierLong: `${SUPABASE_BRAND_BASE}/247b74ea-a9f0-4367-9304-b2f2ee7a93f8.jpeg`,
+  whiteDahlias:   `${SUPABASE_BRAND_BASE}/8aec86d3-87e7-4db9-8af6-eea5e74f052e.jpeg`,
+  lilacRound:     `${SUPABASE_BRAND_BASE}/145e224f-c717-40b5-aab4-6efcdc3e522f.jpeg`,
+  pillarCandles:  `${SUPABASE_BRAND_BASE}/fc0b9e5a-3948-437a-9635-3b2df10a94a8.jpeg`,
+};
+
 export const seedPortfolio: PortfolioItem[] = [
   {
     id: "po_charlotte_theo",
@@ -7,13 +24,12 @@ export const seedPortfolio: PortfolioItem[] = [
     title: "Charlotte & Theo",
     venue: "Glenorchy Estate",
     eventDate: "2024-03-23",
-    coverUrl:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1600&q=80",
+    coverUrl: photo.archBow,
     galleryUrls: [
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=1600&q=80",
+      photo.archBow,
+      photo.gardenMarquee,
+      photo.whiteDahlias,
+      photo.banquetAerial,
     ],
     shortDescription:
       "A long-table autumn wedding at Glenorchy Estate, dressed in bone scallop napkins and a long olive runner.",
@@ -33,11 +49,11 @@ export const seedPortfolio: PortfolioItem[] = [
     title: "Vines & Light",
     venue: "Wanaka Wines",
     eventDate: "2024-12-14",
-    coverUrl:
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1600&q=80",
+    coverUrl: photo.greenDinner,
     galleryUrls: [
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80",
+      photo.greenDinner,
+      photo.lilacRound,
+      photo.gardenMarquee,
     ],
     shortDescription:
       "A high-summer wedding among the vines — clay scallop napkins, low ceramics, an unhurried lunch.",
@@ -52,11 +68,11 @@ export const seedPortfolio: PortfolioItem[] = [
     title: "Lake dinner",
     venue: "Private residence — Kelvin Heights",
     eventDate: "2024-10-05",
-    coverUrl:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80",
+    coverUrl: photo.chandelierLong,
     galleryUrls: [
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80",
+      photo.chandelierLong,
+      photo.pillarCandles,
+      photo.banquetAerial,
     ],
     shortDescription:
       "A private dinner for thirty-two on the deck of a Kelvin Heights home, dressed entirely in cream and clay.",
@@ -71,10 +87,11 @@ export const seedPortfolio: PortfolioItem[] = [
     title: "Margot Queenstown launch",
     venue: "Margot Group, Queenstown",
     eventDate: "2024-08-09",
-    coverUrl:
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1600&q=80",
+    coverUrl: photo.redRoses,
     galleryUrls: [
-      "https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1600&q=80",
+      photo.redRoses,
+      photo.yellowScallop,
+      photo.lakeNapkin,
     ],
     shortDescription:
       "Custom hospitality napkins for the Margot Group's Queenstown launch — branded in clay-stitched linen.",

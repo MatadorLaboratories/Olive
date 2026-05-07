@@ -69,17 +69,18 @@ export default function HospitalityPage() {
               <figure className="relative">
                 <div className="frame relative aspect-[4/5]">
                   <Image
-                    src="https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=1400&q=85"
-                    alt="Custom-edge napkin folded for service"
+                    src="https://akaxacpjrqmtwwmnecav.supabase.co/storage/v1/object/public/public-media/brand/7768be5e-050e-4559-aa86-82ff65575b64.jpeg"
+                    alt="Custom scallop napkin held above the lake — Wakatipu, summer 2026"
                     fill
                     priority
                     sizes="(min-width: 1024px) 40vw, 92vw"
                     className="object-cover"
+                    unoptimized
                   />
                 </div>
                 <figcaption className="mt-3 flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-olive-700/70">
                   <span className="inline-block h-px w-6 bg-olive-700/30" />
-                  Margot Group · Custom scallop, 240 pieces
+                  Custom scallop in clay · Lake Wakatipu
                 </figcaption>
               </figure>
             </div>
