@@ -64,15 +64,29 @@ export function ImageUploader({
     setOptimisticUrl(localUrl);
 
     startTransition(async () => {
-      const result = await upload(fd);
-      URL.revokeObjectURL(localUrl);
-      if (!result.ok) {
+      try {
+        const result = await upload(fd);
+        URL.revokeObjectURL(localUrl);
+        if (!result.ok) {
+          setOptimisticUrl(null);
+          setError(result.error);
+          return;
+        }
         setOptimisticUrl(null);
-        setError(result.error);
-        return;
+        setSavedAt(Date.now());
+      } catch (err) {
+        URL.revokeObjectURL(localUrl);
+        setOptimisticUrl(null);
+        // Server Actions throw (rather than returning a result) when Next.js
+        // rejects the request envelope itself — body too large, network
+        // dropped, redeploy mid-flight, etc. Surface a friendly message
+        // instead of letting the error bubble to the global error boundary.
+        setError(
+          err instanceof Error && /body|size|payload/i.test(err.message)
+            ? "That image is too large to upload. Try one under 12 MB."
+            : "Upload failed — please try again.",
+        );
       }
-      setOptimisticUrl(null);
-      setSavedAt(Date.now());
     });
   };
 
@@ -237,12 +251,20 @@ export function ImageGalleryUploader({
     fd.set("file", file);
     for (const [k, v] of Object.entries(extra)) fd.set(k, v);
     startTransition(async () => {
-      const result = await upload(fd);
-      if (!result.ok) {
-        setError(result.error);
-        return;
+      try {
+        const result = await upload(fd);
+        if (!result.ok) {
+          setError(result.error);
+          return;
+        }
+        setItems((prev) => [...prev, result.url]);
+      } catch (err) {
+        setError(
+          err instanceof Error && /body|size|payload/i.test(err.message)
+            ? "That image is too large to upload. Try one under 12 MB."
+            : "Upload failed — please try again.",
+        );
       }
-      setItems((prev) => [...prev, result.url]);
     });
   };
 

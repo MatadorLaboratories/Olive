@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
   // (/admin/bookings/[ref], /shop/[slug], …) are real and not synthesised
   // from inline arrays.
   typedRoutes: false,
+  experimental: {
+    // Product image uploads run through Server Actions with a documented
+    // 12 MB cap (see services/admin/product-images.ts). The Next.js default
+    // body size for Server Actions is 1 MB, so any real-world photo would
+    // 500 the action and surface the generic "page couldn't load" error.
+    // 15 MB gives headroom for the multipart envelope on a 12 MB file.
+    serverActions: { bodySizeLimit: "15mb" },
+  },
 };
 
 export default nextConfig;
